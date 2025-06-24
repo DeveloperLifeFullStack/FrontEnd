@@ -1,0 +1,35 @@
+<div class="container">
+  <section>
+    <form action="" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h3>Login</h3>
+      <label for="username">
+        Username:
+        <input
+          type="text"
+          name="username"
+          id="username"
+          formControlName="username"
+          placeholder="Username"
+        />
+        <div
+          class="error"
+          *ngIf="usernameControl?.touched && usernameControl?.invalid"
+        >
+          <small *ngIf="usernameControl?.errors?.['required']">
+            Username is required
+          </small>
+          <small *ngIf="usernameControl?.errors?.['minlength']">
+            Username must be at least 3 and maximum 20 characters
+          </small>
+        </div>
+      </label>
+
+      <button type="submit">Sign in</button>
+      <p>
+        Don't have an account?<span (click)="redirectToRegister()">
+          Sign up</span
+        >
+      </p>
+    </form>
+  </section>
+</div>

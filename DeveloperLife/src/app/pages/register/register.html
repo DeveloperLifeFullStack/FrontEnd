@@ -1,0 +1,113 @@
+<div class="container">
+  <section>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <h3>Register</h3>
+
+      <!-- Username -->
+      <label>
+        Username:
+        <input type="text" formControlName="username" placeholder="Username" />
+        <div class="error">
+          @if (usernameControl?.touched &&
+          usernameControl?.errors?.['required']) {
+          <small>Username is required</small>
+          } @if (usernameControl?.touched &&
+          (usernameControl?.errors?.['minlength'] ||
+          usernameControl?.errors?.['maxlength'])) {
+          <small>Username must be between 3 and 20 characters</small>
+          }
+        </div>
+      </label>
+
+      <!-- Name and Surname -->
+      <div class="row">
+        <label>
+          Name:
+          <input type="text" formControlName="name" placeholder="Name" />
+          <div class="error">
+            @if (registerForm.get('name')?.touched &&
+            registerForm.get('name')?.errors?.['required']) {
+            <small>Name is required</small>
+            }
+          </div>
+        </label>
+
+        <label>
+          Surname:
+          <input type="text" formControlName="surname" placeholder="Surname" />
+          <div class="error">
+            @if (registerForm.get('surname')?.touched &&
+            registerForm.get('surname')?.errors?.['required']) {
+            <small>Surname is required</small>
+            }
+          </div>
+        </label>
+      </div>
+
+      <!-- Date of Birth and Stack -->
+      <div class="row">
+        <label>
+          Date of Birth:
+          <input type="date" formControlName="dateOfBirth" />
+          <div class="error">
+            @if (registerForm.get('dateOfBirth')?.touched &&
+            registerForm.get('dateOfBirth')?.errors?.['required']) {
+            <small>Date of Birth is required</small>
+            }
+          </div>
+        </label>
+
+        <label class="dropdown">
+          Stack Technology:
+          <div
+            class="custom-select"
+            (click)="showStackDropdown = !showStackDropdown"
+          >
+            {{ registerForm.get('stack')?.value || 'Select stack' }}
+          </div>
+          @if (showStackDropdown) {
+          <div class="dropdown-options">
+            @for (tech of stacks; track tech) {
+            <div (click)="selectStack(tech)">{{ tech }}</div>
+            }
+          </div>
+          }
+          <div class="error">
+            @if (stackControl?.touched && stackControl?.errors?.['required']) {
+            <small>Stack selection is required</small>
+            }
+          </div>
+        </label>
+      </div>
+
+      <!-- Experience -->
+      <label class="dropdown full-width">
+        Experience Level:
+        <div
+          class="custom-select"
+          (click)="showExperienceDropdown = !showExperienceDropdown"
+        >
+          {{ registerForm.get('experience')?.value || 'Select experience level'
+          }}
+        </div>
+        @if (showExperienceDropdown) {
+        <div class="dropdown-options">
+          @for ( exp of experiences; track exp) {
+          <div (click)="selectExperience(exp)">{{ exp }}</div>
+          }
+        </div>
+        }
+        <div class="error">
+          @if (experienceControl?.touched &&
+          experienceControl?.errors?.['required']) {
+          <small>Experience selection is required</small>
+          }
+        </div>
+      </label>
+      <button type="submit">Sign up</button>
+      <p>
+        Already have an account<span (click)="navigateToLogin()"> Login</span>
+      </p>
+    </form>
+  </section>
+</div>

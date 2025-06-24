@@ -1,0 +1,97 @@
+<div class="dashboard-container">
+  <!-- Mobile Overlay -->
+
+  <div
+    class="sidebar-overlay"
+    [class.active]="sideBarService.isSidebarOpen$ | async"
+    (click)="sideBarService.closeSidebar()"
+  ></div>
+
+  <aside
+    class="sidebar"
+    [class.sidebar-open]="sideBarService.isSidebarOpen$ | async"
+  >
+    <div class="sidebar-header">
+      <button class="sidebar-close" (click)="sideBarService.closeSidebar()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="profile-section">
+      <div class="profile-avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <h3 class="profile-name">Nino Beridze</h3>
+      <p class="profile-email">ninoexample.com</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <ul>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'home'"
+          (click)="setActiveNavItem('home')"
+        >
+          <i class="fas fa-home"></i>
+          <span>Home</span>
+        </li>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'profile'"
+          (click)="setActiveNavItem('profile')"
+        >
+          <i class="fas fa-user"></i>
+          <span>Code Casino</span>
+        </li>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'horoscope'"
+          (click)="setActiveNavItem('horoscope')"
+        >
+          <i class="fas fa-star"></i>
+          <span>Code Roast</span>
+        </li>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'coding'"
+          (click)="setActiveNavItem('coding')"
+        >
+          <i class="fas fa-code"></i>
+          <span>Bug Chase</span>
+        </li>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'stats'"
+          (click)="setActiveNavItem('stats')"
+        >
+          <i class="fas fa-chart-line"></i>
+          <span>WhoYouCode</span>
+        </li>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'settings'"
+          (click)="setActiveNavItem('settings')"
+        >
+          <i class="fas fa-cog"></i>
+          <span>Dev Dating Room</span>
+        </li>
+        <li
+          class="nav-item"
+          [class.active]="activeNavItem === 'escape'"
+          (click)="setActiveNavItem('escape')"
+        >
+          <i class="fas fa-cog"></i>
+          <span>Escape The Meeting</span>
+        </li>
+      </ul>
+    </nav>
+    <button class="logout-btn" (click)="logOut()">
+      <i class="fas fa-sign-out-alt"></i>
+      Log Out
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+  </main>
+</div>

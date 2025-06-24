@@ -1,0 +1,125 @@
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Home</h1>
+    </div>
+    <button class="contact-support">
+      <i class="fas fa-headset"></i>
+      <span class="support-text">Support</span>
+    </button>
+  </div>
+</header>
+<div class="dashboard-grid">
+  <div class="card welcome-card">
+    <div class="card-header">
+      <h2>Welcome! 👋</h2>
+    </div>
+    <div class="card-content">
+      <p>Hello, Nino! Today is a great day to learn new technologies.</p>
+      <div class="user-info">
+        <div class="info-item">
+          <span class="label">Full Name:</span>
+          <span class="value">Nino Beridze</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Date of Birth:</span>
+          <span class="value">April 15, 1995</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Username:</span>
+          <span class="value">nino_dev</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card horoscope-card">
+    <div class="card-header">
+      <h2>Daily Horoscope</h2>
+      <div class="zodiac-sign">
+        <i class="fas fa-ram"></i>
+        <span>Aries</span>
+      </div>
+    </div>
+    <div class="card-content">
+      <p>Today is favorable for starting new projects. Lucky number: 7</p>
+      <div class="horoscope-rating">
+        <div class="rating-item">
+          <span>Love</span>
+          <div class="rating-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+          </div>
+        </div>
+        <div class="rating-item">
+          <span>Career</span>
+          <div class="rating-stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card coding-tips-card">
+    <div class="card-header">
+      <h2>Coding Tips</h2>
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <div class="card-content">
+      <div class="tip-of-the-day">
+        <h3>Tip of the Day:</h3>
+        <p>
+          "When writing Clean Code, always think that another developer should
+          be able to read your code."
+        </p>
+      </div>
+      <div class="coding-stats">
+        <div class="stat-item">
+          <span class="stat-number">42</span>
+          <span class="stat-label">Commits</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">8.5</span>
+          <span class="stat-label">Hours</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">12</span>
+          <span class="stat-label">Bugs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card lucky-tech-card">
+    <div class="card-header">
+      <h2>Lucky Technology of the Day</h2>
+      <i class="fas fa-magic"></i>
+    </div>
+    <div class="card-content">
+      <div class="tech-spotlight">
+        <div class="tech-icon">
+          <i class="fab fa-angular"></i>
+        </div>
+        <div class="tech-info">
+          <h3>Angular</h3>
+          <p>Working with Angular today will be especially productive!</p>
+          <div class="tech-benefits">
+            <span class="benefit">+20% Productivity</span>
+            <span class="benefit">Fewer Bugs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
