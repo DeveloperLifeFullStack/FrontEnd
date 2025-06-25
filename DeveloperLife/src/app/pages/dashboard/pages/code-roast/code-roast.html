@@ -1,1 +1,230 @@
-<p>code-roast works!</p>
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Code Roast 🔥</h1>
+    </div>
+  </div>
+</header>
+
+<div class="roast-grid">
+  <div class="card challenge-card">
+    <div class="card-header">
+      <h2>Pick Your Poison</h2>
+    </div>
+    <div class="card-content">
+      <div class="selection-section">
+        <h4>Difficulty Level:</h4>
+        <div class="difficulty-selector">
+          <div
+            class="difficulty-option"
+            [class.selected]="selectedDifficulty === 'easy'"
+            (click)="selectDifficulty('easy')"
+          >
+            <div class="difficulty-icon easy">🟢</div>
+            <span>Easy</span>
+            <small>Warm-up roast</small>
+          </div>
+          <div
+            class="difficulty-option"
+            [class.selected]="selectedDifficulty === 'medium'"
+            (click)="selectDifficulty('medium')"
+          >
+            <div class="difficulty-icon medium">🟡</div>
+            <span>Medium</span>
+            <small>Spicy criticism</small>
+          </div>
+          <div
+            class="difficulty-option"
+            [class.selected]="selectedDifficulty === 'hard'"
+            (click)="selectDifficulty('hard')"
+          >
+            <div class="difficulty-icon hard">🔴</div>
+            <span>Hard</span>
+            <small>Brutal honesty</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="selection-section">
+        <h4>Programming Language:</h4>
+        <div class="language-selector">
+          <div
+            class="language-option"
+            [class.selected]="selectedLanguage === 'javascript'"
+            (click)="selectLanguage('javascript')"
+          >
+            <i class="fab fa-js-square"></i>
+            <span>JavaScript</span>
+          </div>
+          <div
+            class="language-option"
+            [class.selected]="selectedLanguage === 'python'"
+            (click)="selectLanguage('python')"
+          >
+            <i class="fab fa-python"></i>
+            <span>Python</span>
+          </div>
+          <div
+            class="language-option"
+            [class.selected]="selectedLanguage === 'java'"
+            (click)="selectLanguage('java')"
+          >
+            <i class="fab fa-java"></i>
+            <span>Java</span>
+          </div>
+          <div
+            class="language-option"
+            [class.selected]="selectedLanguage === 'csharp'"
+            (click)="selectLanguage('csharp')"
+          >
+            <i class="fas fa-hashtag"></i>
+            <span>C#</span>
+          </div>
+          <div
+            class="language-option"
+            [class.selected]="selectedLanguage === 'cpp'"
+            (click)="selectLanguage('cpp')"
+          >
+            <i class="fas fa-code"></i>
+            <span>C++</span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="get-challenge-btn"
+        [disabled]="!canGenerateChallenge()"
+        (click)="getNewChallenge()"
+      >
+        <i class="fas fa-dice"></i>
+        Get Random Challenge
+      </button>
+    </div>
+  </div>
+
+  <div class="card current-challenge-card" *ngIf="currentChallenge">
+    <div class="card-header">
+      <h2>{{ currentChallenge.title }}</h2>
+      <div class="challenge-meta">
+        <span class="difficulty-tag" [class]="currentChallenge.difficulty">
+          {{ currentChallenge.difficulty | titlecase }}
+        </span>
+        <span class="source-tag">{{ currentChallenge.source }}</span>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="challenge-description">
+        <p>{{ currentChallenge.description }}</p>
+      </div>
+      <div class="challenge-examples" *ngIf="currentChallenge.examples">
+        <h4>Examples:</h4>
+        <div class="example" *ngFor="let example of currentChallenge.examples">
+          <div class="example-input">
+            <strong>Input:</strong> {{ example.input }}
+          </div>
+          <div class="example-output">
+            <strong>Output:</strong> {{ example.output }}
+          </div>
+        </div>
+      </div>
+      <div class="challenge-constraints" *ngIf="currentChallenge.constraints">
+        <h4>Constraints:</h4>
+        <ul>
+          <li *ngFor="let constraint of currentChallenge.constraints">
+            {{ constraint }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Editor Card -->
+  <div class="card code-editor-card" *ngIf="currentChallenge">
+    <div class="card-header">
+      <h2>Write Your Solution ({{ selectedLanguage | titlecase }})</h2>
+      <div class="editor-controls">
+        <button class="run-btn" (click)="runCode()" [disabled]="isRunning">
+          <i class="fas fa-play" *ngIf="!isRunning"></i>
+          <i class="fas fa-spinner fa-spin" *ngIf="isRunning"></i>
+          {{ isRunning ? 'Running...' : 'Run Tests' }}
+        </button>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="code-editor-container">
+        <div class="editor-placeholder">
+          <!-- Mock code editor - replace with real editor like Monaco -->
+          <textarea
+            [(ngModel)]="userCode"
+            class="code-editor"
+            placeholder="// Write your solution here...
+function solution() {
+    // Your code here
+}"
+          >
+          </textarea>
+          <div class="editor-overlay" *ngIf="!userCode">
+            <i class="fas fa-code"></i>
+            <p>Start coding to get roasted! 🔥</p>
+          </div>
+        </div>
+      </div>
+      <div class="editor-footer">
+        <button
+          class="submit-btn"
+          [disabled]="!userCode || isRunning"
+          (click)="submitForRoast()"
+        >
+          <i class="fas fa-fire"></i>
+          Submit for Roasting
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Roast Results Card -->
+  <div class="card roast-results-card" *ngIf="lastRoast">
+    <div class="card-header">
+      <h2>AI Judgment</h2>
+      <div class="roast-score" [class]="lastRoast.scoreClass">
+        <span class="score">{{ lastRoast.score }}/10</span>
+        <div class="score-emoji">{{ lastRoast.emoji }}</div>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="roast-message" [class]="lastRoast.type">
+        <div class="roast-icon">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="roast-text">
+          <p>"{{ lastRoast.message }}"</p>
+        </div>
+      </div>
+
+      <div class="roast-details" *ngIf="lastRoast.details">
+        <h4>Detailed Feedback:</h4>
+        <div class="feedback-section" *ngFor="let section of lastRoast.details">
+          <div class="feedback-header">
+            <i [class]="section.icon"></i>
+            <span>{{ section.title }}</span>
+          </div>
+          <p>{{ section.comment }}</p>
+        </div>
+      </div>
+
+      <div class="test-results" *ngIf="lastRoast.testResults">
+        <h4>Test Results:</h4>
+        <div class="test-summary">
+          <span class="passed">{{ lastRoast.testResults.passed }} Passed</span>
+          <span class="failed">{{ lastRoast.testResults.failed }} Failed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

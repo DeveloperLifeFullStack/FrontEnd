@@ -1,0 +1,761 @@
+@import "../../../../partials/variables";
+
+// Roast specific colors
+$roast-fire: #ff6b35;
+$roast-good: #00d9ff;
+$roast-bad: #ff4757;
+$roast-neutral: #ffa726;
+$code-editor-bg: #1e1e1e;
+$code-editor-border: #3c3c3c;
+
+// Header
+.dashboard-header {
+  margin-bottom: 2rem;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $text-primary;
+      background: linear-gradient(45deg, $roast-fire, $primaryColor);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      .stat-chip {
+        background: rgba($primaryColor, 0.1);
+        border: 1px solid $primaryColor;
+        color: $primaryColor;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+
+        &.accuracy {
+          background: rgba($roast-good, 0.1);
+          border-color: $roast-good;
+          color: $roast-good;
+        }
+
+        &.roast-level {
+          background: rgba($roast-fire, 0.1);
+          border-color: $roast-fire;
+          color: $roast-fire;
+        }
+
+        i {
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}
+
+// Roast Grid
+.roast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+// Card Styles
+.card {
+  background-color: $card-bg;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  @include card-shadow;
+  border: 1px solid $border-color;
+  @include transition();
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    i {
+      color: $primaryColor;
+      font-size: 1.25rem;
+    }
+  }
+
+  .card-content {
+    color: $text-secondary;
+  }
+}
+
+// Challenge Selection Card
+.challenge-card {
+  .source-badges {
+    display: flex;
+    gap: 0.5rem;
+
+    .source-badge {
+      background: rgba($border-color, 0.3);
+      color: $text-secondary;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      cursor: pointer;
+      @include transition();
+
+      &:hover {
+        background: rgba($primaryColor, 0.2);
+      }
+
+      &.active {
+        background: $primaryColor;
+        color: white;
+      }
+    }
+  }
+
+  .selection-section {
+    margin-bottom: 2rem;
+
+    h4 {
+      color: $text-primary;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+  }
+
+  .difficulty-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .difficulty-option {
+      text-align: center;
+      padding: 1rem;
+      border: 2px solid $border-color;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      @include transition();
+
+      &:hover {
+        border-color: $primaryColor;
+      }
+
+      &.selected {
+        border-color: $roast-fire;
+        background: rgba($roast-fire, 0.1);
+      }
+
+      .difficulty-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      span {
+        display: block;
+        font-weight: 600;
+        color: $text-primary;
+        margin-bottom: 0.25rem;
+      }
+
+      small {
+        color: $text-secondary;
+        font-style: italic;
+      }
+    }
+  }
+
+  .language-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.75rem;
+
+    .language-option {
+      text-align: center;
+      padding: 0.75rem;
+      border: 2px solid $border-color;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      @include transition();
+
+      &:hover {
+        border-color: $primaryColor;
+      }
+
+      &.selected {
+        border-color: $roast-fire;
+        background: rgba($roast-fire, 0.1);
+      }
+
+      i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: $primaryColor;
+      }
+
+      span {
+        font-weight: 500;
+        color: $text-primary;
+        font-size: 0.875rem;
+      }
+    }
+  }
+
+  .get-challenge-btn {
+    width: 100%;
+    background: linear-gradient(45deg, $roast-fire, $primaryColor);
+    border: none;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    @include transition();
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba($roast-fire, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Current Challenge Card
+.current-challenge-card {
+  grid-column: span 2;
+
+  .challenge-meta {
+    display: flex;
+    gap: 0.5rem;
+
+    .difficulty-tag {
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+
+      &.easy {
+        background: rgba(#4caf50, 0.2);
+        color: #4caf50;
+      }
+
+      &.medium {
+        background: rgba(#ff9800, 0.2);
+        color: #ff9800;
+      }
+
+      &.hard {
+        background: rgba(#f44336, 0.2);
+        color: #f44336;
+      }
+    }
+
+    .source-tag {
+      background: rgba($primaryColor, 0.1);
+      color: $primaryColor;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  }
+
+  .challenge-description {
+    margin-bottom: 1.5rem;
+
+    p {
+      color: $text-primary;
+      line-height: 1.6;
+    }
+  }
+
+  .challenge-examples {
+    margin-bottom: 1.5rem;
+
+    h4 {
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+    }
+
+    .example {
+      background: rgba($border-color, 0.3);
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-family: "Courier New", monospace;
+      font-size: 0.9rem;
+
+      .example-input,
+      .example-output {
+        margin-bottom: 0.25rem;
+      }
+    }
+  }
+
+  .challenge-constraints {
+    h4 {
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        padding: 0.25rem 0;
+        color: $text-secondary;
+
+        &::before {
+          content: "•";
+          color: $primaryColor;
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+// Code Editor Card
+.code-editor-card {
+  grid-column: span 2;
+
+  .editor-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    .run-btn {
+      background: rgba($roast-good, 0.1);
+      border: 1px solid $roast-good;
+      color: $roast-good;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      @include transition();
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &:hover:not(:disabled) {
+        background: $roast-good;
+        color: white;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .code-editor-container {
+    position: relative;
+    margin: 1rem 0;
+
+    .code-editor {
+      width: 100%;
+      height: 300px;
+      background: $code-editor-bg;
+      border: 1px solid $code-editor-border;
+      border-radius: 0.5rem;
+      color: #e6e6e6;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      padding: 1rem;
+      resize: vertical;
+
+      &:focus {
+        outline: none;
+        border-color: $primaryColor;
+      }
+    }
+
+    .editor-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: $text-secondary;
+      pointer-events: none;
+
+      i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+      }
+
+      p {
+        font-size: 1.1rem;
+        opacity: 0.7;
+      }
+    }
+  }
+
+  .editor-footer {
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(45deg, $roast-fire, #ff8a50);
+      border: none;
+      color: white;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      @include transition();
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba($roast-fire, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// AI Roast Results Card
+.roast-results-card {
+  grid-column: span 2;
+
+  .roast-score {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .score {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .score-emoji {
+      font-size: 1.5rem;
+    }
+
+    &.good {
+      color: $roast-good;
+    }
+
+    &.bad {
+      color: $roast-bad;
+    }
+
+    &.neutral {
+      color: $roast-neutral;
+    }
+  }
+
+  .roast-message {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+
+    &.good {
+      background: rgba($roast-good, 0.1);
+      border-left: 4px solid $roast-good;
+    }
+
+    &.bad {
+      background: rgba($roast-bad, 0.1);
+      border-left: 4px solid $roast-bad;
+    }
+
+    &.neutral {
+      background: rgba($roast-neutral, 0.1);
+      border-left: 4px solid $roast-neutral;
+    }
+
+    .roast-icon {
+      color: $primaryColor;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .roast-text {
+      flex: 1;
+
+      p {
+        color: $text-primary;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        font-style: italic;
+        margin: 0;
+      }
+    }
+  }
+
+  .roast-details {
+    margin-bottom: 1.5rem;
+
+    h4 {
+      color: $text-primary;
+      margin-bottom: 1rem;
+    }
+
+    .feedback-section {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background: rgba($border-color, 0.2);
+      border-radius: 0.5rem;
+
+      .feedback-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: $text-primary;
+      }
+    }
+  }
+
+  .test-results {
+    .test-summary {
+      display: flex;
+      gap: 1rem;
+
+      .passed {
+        color: $roast-good;
+        font-weight: 600;
+      }
+
+      .failed {
+        color: $roast-bad;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// Hide mobile menu toggle on desktop
+.mobile-menu-toggle {
+  display: none;
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .roast-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+
+  .current-challenge-card,
+  .code-editor-card,
+  .roast-results-card {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          background-color: $primaryColor;
+          border: none;
+          border-radius: 0.5rem;
+          color: white;
+          cursor: pointer;
+          @include transition();
+
+          &:hover {
+            background-color: darken($primaryColor, 10%);
+          }
+
+          i {
+            font-size: 1.125rem;
+          }
+        }
+      }
+
+      .header-stats {
+        justify-content: center;
+        gap: 0.5rem;
+
+        .stat-chip {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
+  .roast-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .challenge-card {
+    .difficulty-selector {
+      grid-template-columns: 1fr;
+    }
+
+    .language-selector {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .code-editor-card {
+    .code-editor {
+      height: 250px;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  .dashboard-header {
+    margin-bottom: 1rem;
+
+    .header-content {
+      .header-left {
+        gap: 0.5rem;
+
+        h1 {
+          font-size: 1.25rem;
+        }
+
+        .mobile-menu-toggle {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      .header-stats {
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+    }
+  }
+
+  .roast-grid {
+    gap: 0.75rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  .challenge-card {
+    .language-selector {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .code-editor-card {
+    .code-editor {
+      height: 200px;
+      font-size: 0.75rem;
+      padding: 0.75rem;
+    }
+  }
+
+  .roast-message {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+
+    .roast-icon {
+      align-self: center;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes roastFlame {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.roast-fire {
+  animation: roastFlame 2s ease-in-out infinite;
+}

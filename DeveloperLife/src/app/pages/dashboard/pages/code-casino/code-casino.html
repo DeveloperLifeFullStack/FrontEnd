@@ -1,1 +1,207 @@
-<p>code-casino works!</p>
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Code Casino 🎰</h1>
+    </div>
+    <div class="header-stats">
+      <div class="stat-chip">
+        <i class="fas fa-coins"></i>
+        <span>1,250 Points</span>
+      </div>
+      <div class="stat-chip streak">
+        <i class="fas fa-fire"></i>
+        <span>5 Streak</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="casino-grid">
+  <!-- Game Status Card -->
+  <div class="card game-status-card">
+    <div class="card-header">
+      <h2>Today's Challenge</h2>
+      <div class="challenge-timer">
+        <i class="fas fa-clock"></i>
+        <span>23:45:12</span>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="challenge-progress">
+        <div class="progress-info">
+          <span>Daily Progress: 3/5</span>
+          <span class="completion">60%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 60%"></div>
+        </div>
+      </div>
+      <div class="zodiac-luck">
+        <div class="luck-multiplier">
+          <i class="fas fa-star"></i>
+          <span>Aries Luck: 1.5x</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code Battle Arena -->
+  <div class="card code-battle-card">
+    <div class="card-header">
+      <h2>Choose the Working Code</h2>
+      <div class="difficulty-badge">
+        <span>JavaScript - Easy</span>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="code-snippets">
+        <div
+          class="code-option"
+          [class.selected]="selectedCode === 'A'"
+          (click)="selectCode('A')"
+        >
+          <div class="code-header">
+            <span class="code-label">Code A</span>
+            <div class="vote-count">
+              <i class="fas fa-users"></i>
+              <span>67%</span>
+            </div>
+          </div>
+          <div class="code-content">
+            <pre><code>{{codeSnippetA}}</code></pre>
+          </div>
+        </div>
+
+        <div class="vs-divider">
+          <span>VS</span>
+        </div>
+
+        <div
+          class="code-option"
+          [class.selected]="selectedCode === 'B'"
+          (click)="selectCode('B')"
+        >
+          <div class="code-header">
+            <span class="code-label">Code B</span>
+            <div class="vote-count">
+              <i class="fas fa-users"></i>
+              <span>33%</span>
+            </div>
+          </div>
+          <div class="code-content">
+            <pre><code>{{codeSnippetB}}
+</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Betting Interface -->
+      <div class="betting-interface">
+        <div class="bet-controls">
+          <label>Bet Amount:</label>
+          <div class="bet-inputs">
+            <button class="bet-btn" (click)="setBet(50)">50</button>
+            <button class="bet-btn" (click)="setBet(100)">100</button>
+            <button class="bet-btn" (click)="setBet(250)">250</button>
+            <input
+              type="number"
+              [(ngModel)]="betAmount"
+              placeholder="Custom"
+              class="custom-bet"
+            />
+          </div>
+        </div>
+        <div class="potential-win">
+          <span
+            >Potential Win: <strong>{{ calculateWin() }} points</strong></span
+          >
+        </div>
+        <button
+          class="place-bet-btn"
+          [disabled]="!selectedCode || !betAmount"
+          (click)="placeBet()"
+        >
+          <i class="fas fa-dice"></i>
+          Place Bet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Card -->
+  <div class="card stats-card">
+    <div class="card-header">
+      <h2>Your Stats</h2>
+      <i class="fas fa-chart-bar"></i>
+    </div>
+    <div class="card-content">
+      <div class="stat-grid">
+        <div class="stat-item">
+          <span class="stat-number">87%</span>
+          <span class="stat-label">Win Rate</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">342</span>
+          <span class="stat-label">Games Won</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">15</span>
+          <span class="stat-label">Best Streak</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">12.5k</span>
+          <span class="stat-label">Total Earned</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Card -->
+  <div class="card leaderboard-card">
+    <div class="card-header">
+      <h2>Daily Leaderboard</h2>
+      <i class="fas fa-trophy"></i>
+    </div>
+    <div class="card-content">
+      <div class="leaderboard-list">
+        <div class="leaderboard-item top-player">
+          <div class="rank">1</div>
+          <div class="player-info">
+            <span class="player-name">CodeMaster_42</span>
+            <span class="player-score">8,750 pts</span>
+          </div>
+          <div class="crown">👑</div>
+        </div>
+        <div class="leaderboard-item">
+          <div class="rank">2</div>
+          <div class="player-info">
+            <span class="player-name">DebugQueen</span>
+            <span class="player-score">7,320 pts</span>
+          </div>
+        </div>
+        <div class="leaderboard-item">
+          <div class="rank">3</div>
+          <div class="player-info">
+            <span class="player-name">SyntaxNinja</span>
+            <span class="player-score">6,890 pts</span>
+          </div>
+        </div>
+        <div class="leaderboard-item current-user">
+          <div class="rank">8</div>
+          <div class="player-info">
+            <span class="player-name">nino_dev (You)</span>
+            <span class="player-score">4,250 pts</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Games -->
+</div>

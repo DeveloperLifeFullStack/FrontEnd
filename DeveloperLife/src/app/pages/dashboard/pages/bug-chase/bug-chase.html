@@ -1,1 +1,194 @@
-<p>bug-chase works!</p>
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Bug Chase 🏃‍💻</h1>
+    </div>
+    <div class="header-stats" *ngIf="isPlaying || isGameOver">
+      <div class="stat-chip score">
+        <i class="fas fa-trophy"></i>
+        <span>Score: {{ score }}</span>
+      </div>
+      <div class="stat-chip coffee">
+        <i class="fas fa-coffee"></i>
+        <span>Coffee: {{ coffeeCount }}</span>
+      </div>
+      <div class="stat-chip level">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Speed: {{ gameSpeed.toFixed(1) }}</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="game-container">
+  <!-- Game Canvas -->
+  <div class="game-canvas-container">
+    <canvas #gameCanvas class="game-canvas" width="800" height="400"> </canvas>
+
+    <!-- Start Screen -->
+    <div class="game-overlay" *ngIf="!isPlaying && !isGameOver">
+      <div class="start-screen">
+        <h2>🏃‍💻 Bug Chase</h2>
+        <p>Avoid bugs and deadlines, collect coffee!</p>
+        <div class="controls-info">
+          <div class="control-item">
+            <span class="key">SPACE</span>
+            <span class="action">Jump over obstacles</span>
+          </div>
+          <div class="control-item">
+            <span class="key">↓</span>
+            <span class="action">Duck under flying obstacles</span>
+          </div>
+        </div>
+        <div class="game-tips">
+          <div class="tip-item">
+            <span class="tip-icon">🐛</span>
+            <span>Avoid BUGS</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-icon">⏰</span>
+            <span>Dodge DEADLINES</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-icon">☕</span>
+            <span>Collect COFFEE for points</span>
+          </div>
+        </div>
+        <button class="start-btn" (click)="startGame()">
+          <i class="fas fa-play"></i>
+          Start Game!
+        </button>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="game-overlay" *ngIf="isGameOver">
+      <div class="game-over-screen">
+        <h2>💀 Game Over!</h2>
+        <div class="final-stats">
+          <div class="stat">
+            <i class="fas fa-trophy"></i>
+            <span>Final Score: {{ score }}</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-coffee"></i>
+            <span>Coffee Collected: {{ coffeeCount }}</span>
+          </div>
+          <div class="stat" *ngIf="highScore > 0">
+            <i class="fas fa-crown"></i>
+            <span>Best Score: {{ highScore }}</span>
+          </div>
+        </div>
+        <div class="game-over-actions">
+          <button class="restart-btn" (click)="restartGame()">
+            <i class="fas fa-redo"></i>
+            Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Controls -->
+    <div class="mobile-controls" *ngIf="isMobile && isPlaying">
+      <button class="control-btn jump-btn" (click)="jump()">
+        <i class="fas fa-arrow-up"></i>
+        <span>Jump</span>
+      </button>
+      <button
+        class="control-btn duck-btn"
+        (mousedown)="startDuck()"
+        (mouseup)="stopDuck()"
+        (touchstart)="startDuck()"
+        (touchend)="stopDuck()"
+      >
+        <i class="fas fa-arrow-down"></i>
+        <span>Duck</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Game Info Sidebar -->
+  <div class="game-sidebar">
+    <!-- Instructions -->
+    <div class="card instructions-card">
+      <div class="card-header">
+        <h3>🎮 How to Play</h3>
+      </div>
+      <div class="card-content">
+        <div class="instruction-item">
+          <i class="fas fa-bug"></i>
+          <span>Jump over ground "BUG" obstacles</span>
+        </div>
+        <div class="instruction-item">
+          <i class="fas fa-calendar-times"></i>
+          <span>Duck under flying "DEADLINE" blocks</span>
+        </div>
+        <div class="instruction-item">
+          <i class="fas fa-coffee"></i>
+          <span>Collect brown coffee for +25 points</span>
+        </div>
+        <div class="instruction-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Game gets faster over time</span>
+        </div>
+        <div class="instruction-item">
+          <i class="fas fa-gamepad"></i>
+          <span>Mobile: Use touch buttons below</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- High Scores -->
+    <div class="card scores-card">
+      <div class="card-header">
+        <h3>🏆 Your Best Scores</h3>
+      </div>
+      <div class="card-content">
+        <div class="score-list">
+          <div
+            class="score-item"
+            *ngFor="let scoreData of bestScores; let i = index"
+          >
+            <span class="rank">{{ i + 1 }}</span>
+            <div class="score-details">
+              <span class="points">{{ scoreData }}pts  </span>
+              <small class="coffee-count">☕ </small>
+            </div>
+          </div>
+          <div class="no-scores" *ngIf="bestScores.length === 0">
+            <p>No scores yet! Start playing to set your first record.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coffee Collection Progress -->
+    <div class="card coffee-card" *ngIf="isPlaying || isGameOver">
+      <div class="card-header">
+        <h3>☕ Coffee Progress</h3>
+      </div>
+      <div class="card-content">
+        <div class="coffee-progress">
+          <div class="coffee-stat">
+            <span class="label">This Game:</span>
+            <span class="value">{{ coffeeCount }} ☕</span>
+          </div>
+          <div class="coffee-stat">
+            <span class="label">Total Ever:</span>
+            <span class="value">{{ totalCoffee }} ☕</span>
+          </div>
+          <div class="coffee-milestone" *ngIf="coffeeCount >= 5">
+            <i class="fas fa-fire"></i>
+            <span>Coffee Master! 🔥</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

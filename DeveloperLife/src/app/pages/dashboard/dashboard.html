@@ -30,6 +30,7 @@
           class="nav-item"
           [class.active]="activeNavItem === 'home'"
           (click)="setActiveNavItem('home')"
+          (click)="goToPage('home')"
         >
           <i class="fas fa-home"></i>
           <span>Home</span>
@@ -38,24 +39,28 @@
           class="nav-item"
           [class.active]="activeNavItem === 'profile'"
           (click)="setActiveNavItem('profile')"
+          (click)="goToPage('code-casino')"
         >
-          <i class="fas fa-user"></i>
+          <i class="fa-solid fa-circle-dollar-to-slot"></i>
           <span>Code Casino</span>
         </li>
         <li
           class="nav-item"
           [class.active]="activeNavItem === 'horoscope'"
           (click)="setActiveNavItem('horoscope')"
+          (click)="goToPage('code-roast')"
         >
-          <i class="fas fa-star"></i>
+          <i class="fa-solid fa-person-breastfeeding"></i>
+
           <span>Code Roast</span>
         </li>
         <li
           class="nav-item"
           [class.active]="activeNavItem === 'coding'"
           (click)="setActiveNavItem('coding')"
+          (click)="goToPage('bug-chase')"
         >
-          <i class="fas fa-code"></i>
+          <i class="fa-solid fa-bugs"></i>
           <span>Bug Chase</span>
         </li>
         <li
@@ -92,6 +97,6 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    
+    <router-outlet></router-outlet>
   </main>
 </div>
