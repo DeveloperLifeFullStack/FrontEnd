@@ -1,0 +1,1234 @@
+@import "../../../../partials/variables";
+
+// Dev Dating specific colors
+$dating-primary: #e91e63;
+$dating-secondary: #f06292;
+$dating-success: #10b981;
+$dating-danger: #ef4444;
+$dating-warning: #f59e0b;
+$dating-love: #ff69b4;
+
+// Container constraints
+* {
+  box-sizing: border-box;
+}
+
+// Header
+.dashboard-header {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $text-primary;
+      background: linear-gradient(45deg, $dating-primary, $dating-love);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+}
+
+// Main Dating Container
+.dating-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+// Card Base (inherited from your system)
+.card {
+  background-color: $card-bg;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  @include card-shadow;
+  border: 1px solid $border-color;
+  @include transition();
+  margin-bottom: 2rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2,
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0;
+    }
+
+    i {
+      color: $dating-primary;
+      font-size: 1.25rem;
+    }
+  }
+
+  .card-content {
+    color: $text-secondary;
+  }
+}
+
+// Setup Card
+.setup-card {
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+
+  .setup-section {
+    margin-bottom: 2rem;
+
+    h4 {
+      color: $text-primary;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .gender-options,
+    .preference-options {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .option-btn {
+      background: rgba($dating-primary, 0.1);
+      border: 2px solid rgba($dating-primary, 0.3);
+      color: $dating-primary;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      @include transition();
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      flex: 1;
+      min-width: 120px;
+      justify-content: center;
+
+      &:hover {
+        background: rgba($dating-primary, 0.2);
+        transform: translateY(-2px);
+      }
+
+      &.active {
+        background: linear-gradient(45deg, $dating-primary, $dating-secondary);
+        color: white;
+        border-color: $dating-primary;
+      }
+
+      i {
+        font-size: 1.1rem;
+      }
+    }
+
+    .bio-input {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid $border-color;
+      border-radius: 0.75rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      resize: vertical;
+      @include transition();
+
+      &:focus {
+        outline: none;
+        border-color: $dating-primary;
+        box-shadow: 0 0 0 3px rgba($dating-primary, 0.1);
+      }
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: $text-secondary;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .start-dating-btn {
+    width: 100%;
+    background: linear-gradient(45deg, $dating-primary, $dating-love);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    @include transition();
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba($dating-primary, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Dating Interface
+.dating-interface {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+// Profile Card
+.profile-card {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+  @include transition();
+
+  &.swipe-left {
+    animation: swipeLeft 0.5s ease-in-out forwards;
+  }
+
+  &.swipe-right {
+    animation: swipeRight 0.5s ease-in-out forwards;
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .profile-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, $dating-primary, $dating-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .profile-info {
+      flex: 1;
+
+      h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.5rem;
+        color: $text-primary;
+      }
+
+      .profile-role {
+        color: $dating-primary;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+      }
+
+      .profile-stats {
+        display: flex;
+        gap: 1rem;
+
+        .stat {
+          display: flex;
+          align-items: center;
+          gap: 0.25rem;
+          font-size: 0.85rem;
+          color: $text-secondary;
+
+          i {
+            color: $dating-primary;
+          }
+        }
+      }
+    }
+  }
+
+  .profile-bio {
+    margin-bottom: 1.5rem;
+
+    p {
+      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: $text-primary;
+      margin: 0;
+    }
+  }
+
+  .tech-stack {
+    margin-bottom: 1.5rem;
+
+    h4 {
+      color: $text-primary;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tech-tag {
+      background: rgba($primaryColor, 0.1);
+      color: $primaryColor;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid rgba($primaryColor, 0.3);
+
+      &.frontend {
+        background: rgba($dating-success, 0.1);
+        color: $dating-success;
+        border-color: rgba($dating-success, 0.3);
+      }
+
+      &.backend {
+        background: rgba($dating-warning, 0.1);
+        color: $dating-warning;
+        border-color: rgba($dating-warning, 0.3);
+      }
+
+      &.database {
+        background: rgba($dating-danger, 0.1);
+        color: $dating-danger;
+        border-color: rgba($dating-danger, 0.3);
+      }
+    }
+  }
+
+  .compatibility-score {
+    margin-bottom: 1.5rem;
+
+    .score-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin-bottom: 0.5rem;
+    }
+
+    .score-bar {
+      height: 8px;
+      background: rgba($border-color, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+
+      .score-fill {
+        height: 100%;
+        background: linear-gradient(90deg, $dating-primary, $dating-love);
+        border-radius: 4px;
+        @include transition();
+      }
+    }
+
+    .score-text {
+      text-align: center;
+      font-weight: 600;
+      color: $dating-primary;
+    }
+  }
+
+  .swipe-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+
+    .swipe-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      @include transition();
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        @include transition();
+        transform: translate(-50%, -50%);
+      }
+
+      &:active::before {
+        width: 200%;
+        height: 200%;
+      }
+
+      &.reject-btn {
+        background: linear-gradient(
+          45deg,
+          $dating-danger,
+          lighten($dating-danger, 10%)
+        );
+        color: white;
+
+        &::before {
+          background: rgba(white, 0.3);
+        }
+
+        &:hover:not(:disabled) {
+          transform: scale(1.1);
+          box-shadow: 0 8px 20px rgba($dating-danger, 0.4);
+        }
+
+        &:active:not(:disabled) {
+          transform: scale(0.95);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none !important;
+        }
+      }
+
+      &.like-btn {
+        background: linear-gradient(
+          45deg,
+          $dating-success,
+          lighten($dating-success, 10%)
+        );
+        color: white;
+
+        &::before {
+          background: rgba(white, 0.3);
+        }
+
+        &:hover:not(:disabled) {
+          transform: scale(1.1);
+          box-shadow: 0 8px 20px rgba($dating-success, 0.4);
+        }
+
+        &:active:not(:disabled) {
+          transform: scale(0.95);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none !important;
+        }
+      }
+    }
+  }
+}
+
+// No Profiles Card
+.no-profiles-card {
+  max-width: 400px;
+  margin: 0 auto;
+
+  .no-profiles-content {
+    text-align: center;
+    padding: 2rem;
+
+    i {
+      font-size: 3rem;
+      color: $dating-primary;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: $text-primary;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: $text-secondary;
+      margin-bottom: 2rem;
+    }
+
+    .retry-btn {
+      background: linear-gradient(45deg, $dating-primary, $dating-secondary);
+      border: none;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      @include transition();
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 auto;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba($dating-primary, 0.3);
+      }
+    }
+  }
+}
+
+// Stats Card
+.stats-card {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+
+    .stat-item {
+      text-align: center;
+      padding: 1rem;
+      background: rgba($dating-primary, 0.05);
+      border-radius: 0.5rem;
+      border: 1px solid rgba($dating-primary, 0.1);
+
+      .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: $dating-primary;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: $text-secondary;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+// Match Notification
+.match-notification {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  .match-content {
+    background: $card-bg;
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    margin: 1rem;
+
+    .match-header {
+      margin-bottom: 1.5rem;
+
+      i {
+        font-size: 3rem;
+        color: $dating-love;
+        margin-bottom: 1rem;
+      }
+
+      h2 {
+        color: $text-primary;
+        margin: 0;
+      }
+    }
+
+    .match-profiles {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+
+      .match-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, $dating-primary, $dating-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+      }
+
+      .match-connector {
+        i {
+          color: $dating-love;
+          font-size: 1.5rem;
+          animation: pulse 1s infinite;
+        }
+      }
+    }
+
+    p {
+      color: $text-secondary;
+      margin-bottom: 2rem;
+    }
+
+    .match-actions {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+
+      .chat-btn {
+        background: linear-gradient(
+          45deg,
+          $dating-success,
+          lighten($dating-success, 10%)
+        );
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        @include transition();
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba($dating-success, 0.3);
+        }
+      }
+
+      .continue-btn {
+        background: rgba($text-secondary, 0.1);
+        border: 1px solid $text-secondary;
+        color: $text-secondary;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        @include transition();
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+
+        &:hover {
+          background: $text-secondary;
+          color: white;
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+}
+
+// Chat Card (Now as overlay)
+.chat-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+
+  .card {
+    background: $card-bg;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 500px;
+    height: 80vh;
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    position: relative;
+
+    .card-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid $border-color;
+      flex-shrink: 0;
+
+      .chat-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+
+        .chat-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(
+            45deg,
+            $dating-primary,
+            $dating-secondary
+          );
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          color: white;
+        }
+
+        .chat-info {
+          h3 {
+            margin: 0;
+            font-size: 1.1rem;
+          }
+
+          .online-status {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            color: $dating-success;
+
+            i {
+              font-size: 0.6rem;
+            }
+          }
+        }
+      }
+
+      .close-chat-btn {
+        background: none;
+        border: none;
+        color: $text-secondary;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
+        @include transition();
+
+        &:hover {
+          background: rgba($text-secondary, 0.1);
+          color: $text-primary;
+        }
+      }
+    }
+
+    .card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: rgba($border-color, 0.3);
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: rgba($dating-primary, 0.5);
+        border-radius: 3px;
+
+        &:hover {
+          background: rgba($dating-primary, 0.7);
+        }
+      }
+
+      .message {
+        display: flex;
+        flex-direction: column;
+        max-width: 80%;
+        animation: messageSlideIn 0.3s ease-out;
+
+        &.own-message {
+          align-self: flex-end;
+
+          .message-content {
+            background: linear-gradient(
+              45deg,
+              $dating-primary,
+              $dating-secondary
+            );
+            color: white;
+          }
+        }
+
+        .message-content {
+          background: rgba($border-color, 0.3);
+          padding: 0.75rem 1rem;
+          border-radius: 1rem;
+          word-wrap: break-word;
+          line-height: 1.4;
+        }
+
+        .message-time {
+          align-self: flex-end;
+          font-size: 0.7rem;
+          color: $text-secondary;
+          margin-top: 0.25rem;
+        }
+      }
+
+      .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $text-secondary;
+        font-size: 0.8rem;
+        animation: fadeIn 0.3s ease-out;
+
+        .typing-dots {
+          display: flex;
+          gap: 0.2rem;
+
+          span {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: $dating-primary;
+            animation: typing 1.4s infinite;
+
+            &:nth-child(2) {
+              animation-delay: 0.2s;
+            }
+
+            &:nth-child(3) {
+              animation-delay: 0.4s;
+            }
+          }
+        }
+      }
+    }
+
+    .chat-input-container {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid $border-color;
+      display: flex;
+      gap: 0.75rem;
+      flex-shrink: 0;
+
+      .chat-input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 2px solid $border-color;
+        border-radius: 1.5rem;
+        font-size: 0.9rem;
+        @include transition();
+
+        &:focus {
+          outline: none;
+          border-color: $dating-primary;
+          box-shadow: 0 0 0 3px rgba($dating-primary, 0.1);
+        }
+      }
+
+      .send-btn {
+        background: linear-gradient(45deg, $dating-primary, $dating-secondary);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        @include transition();
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover:not(:disabled) {
+          transform: scale(1.1);
+          box-shadow: 0 8px 20px rgba($dating-primary, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+// Hide mobile menu toggle on desktop
+.mobile-menu-toggle {
+  display: none;
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .dating-interface {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    .header-content {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .mobile-menu-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          background-color: $primaryColor;
+          border: none;
+          border-radius: 0.5rem;
+          color: white;
+          cursor: pointer;
+          @include transition();
+
+          &:hover {
+            background-color: darken($primaryColor, 10%);
+          }
+
+          i {
+            font-size: 1.125rem;
+          }
+        }
+      }
+    }
+  }
+
+  .dating-container {
+    padding: 0 0.5rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .setup-card {
+    .setup-section {
+      .gender-options,
+      .preference-options {
+        flex-direction: column;
+      }
+
+      .option-btn {
+        min-width: auto;
+      }
+    }
+  }
+
+  .profile-card {
+    .swipe-actions {
+      .swipe-btn {
+        font-size: 1.25rem;
+      }
+    }
+  }
+
+  .match-notification {
+    .match-content {
+      margin: 0.5rem;
+      padding: 1.5rem;
+
+      .match-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+  }
+
+  .chat-card {
+    padding: 0.5rem;
+
+    .card {
+      height: 90vh;
+      max-height: none;
+      width: 100%;
+      max-width: none;
+
+      .card-header {
+        padding: 1rem;
+      }
+
+      .chat-messages {
+        padding: 1rem;
+      }
+
+      .chat-input-container {
+        padding: 1rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    padding: 0 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .dating-container {
+    padding: 0 0.25rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  .profile-card {
+    .profile-header {
+      .profile-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+      }
+
+      .profile-info {
+        h3 {
+          font-size: 1.25rem;
+        }
+
+        .profile-stats {
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+      }
+    }
+  }
+
+  .chat-card {
+    padding: 0;
+
+    .card {
+      height: 100vh;
+      max-height: 100vh;
+      width: 100vw;
+      max-width: 100vw;
+      border-radius: 0;
+
+      .card-header {
+        padding: 1rem 1rem 0.75rem 1rem;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+
+        .chat-header {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex: 1;
+
+          .chat-avatar {
+            width: 35px;
+            height: 35px;
+            font-size: 1rem;
+            flex-shrink: 0;
+          }
+
+          .chat-info {
+            flex: 1;
+            min-width: 0;
+
+            h3 {
+              margin: 0;
+              font-size: 1rem;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .online-status {
+              font-size: 0.75rem;
+              white-space: nowrap;
+            }
+          }
+        }
+
+        .close-chat-btn {
+          padding: 0.75rem;
+          margin: -0.75rem -0.5rem -0.75rem 0.5rem;
+          flex-shrink: 0;
+          min-width: 44px;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          i {
+            font-size: 1.25rem;
+          }
+        }
+      }
+
+      .chat-messages {
+        padding: 0.75rem 1rem;
+
+        .message {
+          .message-content {
+            padding: 0.6rem 0.8rem;
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .chat-input-container {
+        padding: 0.75rem 1rem 1rem 1rem;
+
+        .chat-input {
+          padding: 0.6rem 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .send-btn {
+          width: 36px;
+          height: 36px;
+
+          i {
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes swipeLeft {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100vw) rotate(-30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeRight {
+  0% {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100vw) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+.card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.match-notification {
+  animation: slideIn 0.5s ease-out;
+}

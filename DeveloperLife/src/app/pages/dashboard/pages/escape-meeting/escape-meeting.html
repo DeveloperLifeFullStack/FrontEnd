@@ -1,1 +1,276 @@
-<p>escape-meeting works!</p>
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Escape Meeting 🎭</h1>
+    </div>
+    <div class="header-stats">
+      <div class="stat-chip excuses-generated">
+        <i class="fas fa-magic"></i>
+        <span>{{ totalExcusesGenerated }} Generated</span>
+      </div>
+      <div class="stat-chip success-rate">
+        <i class="fas fa-percentage"></i>
+        <span>{{ averageBelievability }}% Believable</span>
+      </div>
+      <div class="stat-chip favorites">
+        <i class="fas fa-heart"></i>
+        <span>{{ favoriteExcuses.length }} Favorites</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="excuse-grid">
+  <!-- Generator Card -->
+  <div class="card generator-card">
+    <div class="card-header">
+      <h2>Generate Your Perfect Excuse</h2>
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <div class="card-content">
+      <div class="selection-section">
+        <h4>Meeting Type:</h4>
+        <div class="category-selector">
+          <div
+            class="category-option"
+            [class.selected]="selectedCategory === 'daily-standup'"
+            (click)="selectCategory('daily-standup')"
+          >
+            <div class="category-icon">📊</div>
+            <span>Daily Standup</span>
+            <small>Morning rituals</small>
+          </div>
+          <div
+            class="category-option"
+            [class.selected]="selectedCategory === 'sprint-planning'"
+            (click)="selectCategory('sprint-planning')"
+          >
+            <div class="category-icon">🎯</div>
+            <span>Sprint Planning</span>
+            <small>Planning sessions</small>
+          </div>
+          <div
+            class="category-option"
+            [class.selected]="selectedCategory === 'client-meeting'"
+            (click)="selectCategory('client-meeting')"
+          >
+            <div class="category-icon">💼</div>
+            <span>Client Meeting</span>
+            <small>External calls</small>
+          </div>
+          <div
+            class="category-option"
+            [class.selected]="selectedCategory === 'team-building'"
+            (click)="selectCategory('team-building')"
+          >
+            <div class="category-icon">🎉</div>
+            <span>Team Building</span>
+            <small>Fun activities</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="selection-section">
+        <h4>Excuse Style:</h4>
+        <div class="style-selector">
+          <div
+            class="style-option"
+            [class.selected]="selectedStyle === 'technical'"
+            (click)="selectStyle('technical')"
+          >
+            <i class="fas fa-server"></i>
+            <span>Technical</span>
+            <small>System issues</small>
+          </div>
+          <div
+            class="style-option"
+            [class.selected]="selectedStyle === 'personal'"
+            (click)="selectStyle('personal')"
+          >
+            <i class="fas fa-user"></i>
+            <span>Personal</span>
+            <small>Life happens</small>
+          </div>
+          <div
+            class="style-option"
+            [class.selected]="selectedStyle === 'creative'"
+            (click)="selectStyle('creative')"
+          >
+            <i class="fas fa-brain"></i>
+            <span>Creative</span>
+            <small>Unexpected chaos</small>
+          </div>
+        </div>
+      </div>
+
+      <button
+        class="generate-btn"
+        [disabled]="!canGenerate()"
+        (click)="generateExcuse()"
+      >
+        <i class="fas fa-dice" *ngIf="!isGenerating"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isGenerating"></i>
+        {{ isGenerating ? 'Crafting Magic...' : 'Generate Excuse' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Current Excuse Card -->
+  <div class="card current-excuse-card" *ngIf="currentExcuse">
+    <div class="card-header">
+      <h2>Your Excuse</h2>
+      <div class="excuse-meta">
+        <div class="believability-score" [class]="getBelievabilityClass()">
+          <span class="score">{{ currentExcuse.believabilityScore }}/10</span>
+          <span class="label">Believable</span>
+        </div>
+        <div class="excuse-type-tag" [class]="currentExcuse.style">
+          {{ currentExcuse.style | titlecase }}
+        </div>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="excuse-text">
+        <p>{{ currentExcuse.text }}</p>
+      </div>
+
+      <div class="excuse-details" *ngIf="currentExcuse.followUpSuggestions">
+        <h4>Follow-up Suggestions:</h4>
+        <ul>
+          <li *ngFor="let suggestion of currentExcuse.followUpSuggestions">
+            {{ suggestion }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="excuse-actions">
+        <button
+          class="action-btn copy-btn"
+          (click)="copyToClipboard()"
+          [class.copied]="justCopied"
+        >
+          <i class="fas fa-copy" *ngIf="!justCopied"></i>
+          <i class="fas fa-check" *ngIf="justCopied"></i>
+          {{ justCopied ? 'Copied!' : 'Copy' }}
+        </button>
+
+        <button
+          class="action-btn favorite-btn"
+          (click)="toggleFavorite()"
+          [class.favorited]="isCurrentFavorite()"
+        >
+          <i class="fas fa-heart" *ngIf="isCurrentFavorite()"></i>
+          <i class="far fa-heart" *ngIf="!isCurrentFavorite()"></i>
+          {{ isCurrentFavorite() ? 'Favorited' : 'Favorite' }}
+        </button>
+
+        <button class="action-btn share-btn" (click)="shareExcuse()">
+          <i class="fas fa-share-alt"></i>
+          Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Favorites Card -->
+  <div class="card favorites-card" *ngIf="favoriteExcuses.length > 0">
+    <div class="card-header">
+      <h2>Your Favorite Excuses</h2>
+      <span class="count-badge">{{ favoriteExcuses.length }}</span>
+    </div>
+    <div class="card-content">
+      <div
+        class="favorite-item"
+        *ngFor="let excuse of favoriteExcuses; let i = index"
+        [class.expanded]="expandedFavorite === i"
+      >
+        <div class="favorite-header" (click)="toggleFavoriteExpansion(i)">
+          <div class="favorite-preview">
+            <span class="favorite-text"
+              >{{ getExcusePreview(excuse.text) }}</span
+            >
+            <div class="favorite-meta">
+              <span class="believability-mini"
+                >{{ excuse.believabilityScore }}/10</span
+              >
+              <span class="style-mini" [class]="excuse.style"
+                >{{ excuse.style }}</span
+              >
+            </div>
+          </div>
+          <button class="expand-btn">
+            <i class="fas fa-chevron-down" *ngIf="expandedFavorite !== i"></i>
+            <i class="fas fa-chevron-up" *ngIf="expandedFavorite === i"></i>
+          </button>
+        </div>
+
+        <div class="favorite-expanded" *ngIf="expandedFavorite === i">
+          <p class="full-text">{{ excuse.text }}</p>
+          <div class="favorite-actions">
+            <button class="mini-btn" (click)="copyFavorite(excuse)">
+              <i class="fas fa-copy"></i>
+            </button>
+            <button class="mini-btn" (click)="shareFavorite(excuse)">
+              <i class="fas fa-share-alt"></i>
+            </button>
+            <button class="mini-btn remove-btn" (click)="removeFavorite(i)">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Stats Card -->
+  <div class="card stats-card">
+    <div class="card-header">
+      <h2>Your Excuse Stats</h2>
+      <i class="fas fa-chart-bar"></i>
+    </div>
+    <div class="card-content">
+      <div class="stat-grid">
+        <div class="stat-item">
+          <div class="stat-number">
+            {{ getStatByCategory('daily-standup') }}
+          </div>
+          <div class="stat-label">Standup Escapes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">
+            {{ getStatByCategory('client-meeting') }}
+          </div>
+          <div class="stat-label">Client Dodges</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">{{ getStatByStyle('technical') }}</div>
+          <div class="stat-label">Tech Excuses</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">{{ getMostBelievableScore() }}</div>
+          <div class="stat-label">Best Score</div>
+        </div>
+      </div>
+
+      <div class="achievement-section">
+        <h4>Achievements:</h4>
+        <div class="achievements">
+          <div
+            class="achievement-badge"
+            *ngFor="let achievement of unlockedAchievements"
+            [title]="achievement.description"
+          >
+            <i [class]="achievement.icon"></i>
+            <span>{{ achievement.name }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -58,6 +58,20 @@ export const routes: Routes = [
             (c) => c.WhoYouCode
           ),
       },
+      {
+        path: 'dev-dating-room',
+        loadComponent: () =>
+          import(
+            './pages/dashboard/pages/dev-dating-room/dev-dating-room'
+          ).then((c) => c.DevDatingRoom),
+      },
+      {
+        path: 'escape-meeting',
+        loadComponent: () =>
+          import('./pages/dashboard/pages/escape-meeting/escape-meeting').then(
+            (c) => c.EscapeMeeting
+          ),
+      },
     ],
   },
 

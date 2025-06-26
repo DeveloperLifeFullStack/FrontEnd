@@ -1,1 +1,310 @@
-<p>dev-dating-room works!</p>
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Dev Dating Room 💑</h1>
+    </div>
+  </div>
+</header>
+
+<div class="dating-container">
+  <!-- Setup Card -->
+  <div class="card setup-card" *ngIf="!isSetupComplete">
+    <div class="card-header">
+      <h2>Setup Your Developer Profile</h2>
+      <i class="fas fa-heart"></i>
+    </div>
+    <div class="card-content">
+      <div class="setup-section">
+        <h4>I am a:</h4>
+        <div class="gender-options">
+          <button
+            class="option-btn"
+            [class.active]="userProfile.gender === 'male'"
+            (click)="userProfile.gender = 'male'"
+          >
+            <i class="fas fa-male"></i>
+            Male Dev
+          </button>
+          <button
+            class="option-btn"
+            [class.active]="userProfile.gender === 'female'"
+            (click)="userProfile.gender = 'female'"
+          >
+            <i class="fas fa-female"></i>
+            Female Dev
+          </button>
+          <button
+            class="option-btn"
+            [class.active]="userProfile.gender === 'other'"
+            (click)="userProfile.gender = 'other'"
+          >
+            <i class="fas fa-user"></i>
+            Other
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-section">
+        <h4>Looking for:</h4>
+        <div class="preference-options">
+          <button
+            class="option-btn"
+            [class.active]="userProfile.preference === 'all'"
+            (click)="userProfile.preference = 'all'"
+          >
+            <i class="fas fa-users"></i>
+            All Developers
+          </button>
+          <button
+            class="option-btn"
+            [class.active]="userProfile.preference === 'frontend'"
+            (click)="userProfile.preference = 'frontend'"
+          >
+            <i class="fab fa-html5"></i>
+            Frontend
+          </button>
+          <button
+            class="option-btn"
+            [class.active]="userProfile.preference === 'backend'"
+            (click)="userProfile.preference = 'backend'"
+          >
+            <i class="fas fa-server"></i>
+            Backend
+          </button>
+        </div>
+      </div>
+
+      <div class="setup-section">
+        <h4>Your Bio:</h4>
+        <textarea
+          class="bio-input"
+          [(ngModel)]="userProfile.bio"
+          placeholder="Tell other developers about yourself... (e.g., 'React enthusiast who debugs with rubber ducks 🦆')"
+          maxlength="200"
+        ></textarea>
+        <div class="char-count">{{ userProfile.bio.length }}/200</div>
+      </div>
+
+      <button
+        class="start-dating-btn"
+        (click)="completeSetup()"
+        [disabled]="!isSetupValid()"
+      >
+        <i class="fas fa-heart"></i>
+        Start Dating!
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Dating Interface -->
+  <div class="dating-interface" *ngIf="isSetupComplete">
+    <!-- Current Profile Card -->
+    <div class="card profile-card" *ngIf="currentProfile">
+      <div class="profile-header">
+        <div class="profile-avatar">{{ currentProfile.name.charAt(0) }}</div>
+        <div class="profile-info">
+          <h3>{{ currentProfile.name }}</h3>
+          <p class="profile-role">{{ currentProfile.role }}</p>
+          <div class="profile-stats">
+            <span class="stat">
+              <i class="fas fa-code"></i>
+              {{ currentProfile.experience }}
+            </span>
+            <span class="stat">
+              <i class="fas fa-map-marker-alt"></i>
+              {{ currentProfile.location }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="profile-bio">
+          <p>"{{ currentProfile.bio }}"</p>
+        </div>
+
+        <div class="tech-stack">
+          <h4>Tech Stack:</h4>
+          <div class="tech-tags">
+            <span
+              class="tech-tag"
+              *ngFor="let tech of currentProfile.techStack"
+              [class]="getTechClass(tech)"
+            >
+              {{ tech }}
+            </span>
+          </div>
+        </div>
+
+        <div class="compatibility-score">
+          <div class="score-label">Compatibility Score</div>
+          <div class="score-bar">
+            <div
+              class="score-fill"
+              [style.width.%]="currentProfile.compatibility"
+            ></div>
+          </div>
+          <div class="score-text">{{ currentProfile.compatibility }}%</div>
+        </div>
+      </div>
+
+      <!-- Swipe Actions -->
+      <div class="swipe-actions">
+        <button
+          class="swipe-btn reject-btn"
+          (click)="swipeLeft()"
+          [disabled]="isSwipeAnimating"
+        >
+          <i class="fas fa-times"></i>
+          Pass
+        </button>
+        <button
+          class="swipe-btn like-btn"
+          (click)="swipeRight()"
+          [disabled]="isSwipeAnimating"
+        >
+          <i class="fas fa-heart"></i>
+          Like
+        </button>
+      </div>
+    </div>
+
+    <!-- No More Profiles -->
+    <div
+      class="card no-profiles-card"
+      *ngIf="!currentProfile && profiles.length === 0"
+    >
+      <div class="card-content">
+        <div class="no-profiles-content">
+          <i class="fas fa-search"></i>
+          <h3>No more developers nearby!</h3>
+          <p>Check back later for more coding companions 💻</p>
+          <button class="retry-btn" (click)="resetProfiles()">
+            <i class="fas fa-redo"></i>
+            Start Over
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="card stats-card">
+      <div class="card-header">
+        <h3>Your Stats</h3>
+        <i class="fas fa-chart-bar"></i>
+      </div>
+      <div class="card-content">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">{{ stats.likes }}</div>
+            <div class="stat-label">Likes Given</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">{{ stats.matches }}</div>
+            <div class="stat-label">Matches</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">{{ stats.viewed }}</div>
+            <div class="stat-label">Profiles Viewed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Match Notification -->
+  <div class="match-notification" *ngIf="showMatchNotification" [@slideIn]>
+    <div class="match-content">
+      <div class="match-header">
+        <i class="fas fa-heart"></i>
+        <h2>It's a Match! 🎉</h2>
+      </div>
+      <div class="match-profiles">
+        <div class="match-avatar">You</div>
+        <div class="match-connector">
+          <i class="fas fa-code"></i>
+        </div>
+        <div class="match-avatar">{{ lastMatch?.name?.charAt(0) || 'D' }}</div>
+      </div>
+      <p>You and {{ lastMatch?.name }} both liked each other!</p>
+      <div class="match-actions">
+        <button class="chat-btn" (click)="startChat()">
+          <i class="fas fa-comments"></i>
+          Start Chatting
+        </button>
+        <button class="continue-btn" (click)="closeMatchNotification()">
+          <i class="fas fa-arrow-right"></i>
+          Keep Swiping
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Interface (Overlay) -->
+  <div class="chat-card" *ngIf="showChat" (click)="closeChat()">
+    <div class="card" (click)="$event.stopPropagation()">
+      <div class="card-header">
+        <div class="chat-header">
+          <div class="chat-avatar">
+            {{ currentChatPartner?.name?.charAt(0) || 'D' }}
+          </div>
+          <div class="chat-info">
+            <h3>{{ currentChatPartner?.name }}</h3>
+            <span class="online-status">
+              <i class="fas fa-circle"></i>
+              Online
+            </span>
+          </div>
+        </div>
+        <button class="close-chat-btn" (click)="closeChat()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="chat-messages" #chatMessagesContainer>
+          <div
+            class="message"
+            *ngFor="let message of chatMessages"
+            [class.own-message]="message.isOwn"
+          >
+            <div class="message-content">{{ message.text }}</div>
+            <div class="message-time">{{ message.time | date:'short' }}</div>
+          </div>
+          <div class="typing-indicator" *ngIf="isTyping">
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <span class="typing-text"
+              >{{ currentChatPartner?.name }} is typing...</span
+            >
+          </div>
+        </div>
+        <div class="chat-input-container">
+          <input
+            type="text"
+            class="chat-input"
+            [(ngModel)]="currentMessage"
+            (keyup.enter)="sendMessage()"
+            placeholder="Type your message..."
+            [disabled]="isTyping"
+          />
+          <button
+            class="send-btn"
+            (click)="sendMessage()"
+            [disabled]="!currentMessage.trim() || isTyping"
+          >
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

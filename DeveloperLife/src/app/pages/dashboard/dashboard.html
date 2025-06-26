@@ -76,16 +76,18 @@
           class="nav-item"
           [class.active]="activeNavItem === 'settings'"
           (click)="setActiveNavItem('settings')"
+          (click)="goToPage('dev-dating-room')"
         >
-          <i class="fas fa-cog"></i>
+          <i class="fa-regular fa-face-grin-hearts"></i>
           <span>Dev Dating Room</span>
         </li>
         <li
           class="nav-item"
           [class.active]="activeNavItem === 'escape'"
           (click)="setActiveNavItem('escape')"
+          (click)="goToPage('escape-meeting')"
         >
-          <i class="fas fa-cog"></i>
+          <i class="fa-solid fa-person-running"></i>
           <span>Escape The Meeting</span>
         </li>
       </ul>
