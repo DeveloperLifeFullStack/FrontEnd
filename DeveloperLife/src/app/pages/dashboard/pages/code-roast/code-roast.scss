@@ -8,14 +8,21 @@ $roast-neutral: #ffa726;
 $code-editor-bg: #1e1e1e;
 $code-editor-border: #3c3c3c;
 
+// Container constraints
+* {
+  box-sizing: border-box;
+}
+
 // Header
 .dashboard-header {
   margin-bottom: 2rem;
+  padding: 0 1rem;
 
   .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 100%;
 
     h1 {
       font-size: 2rem;
@@ -24,11 +31,13 @@ $code-editor-border: #3c3c3c;
       background: linear-gradient(45deg, $roast-fire, $primaryColor);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      margin: 0;
     }
 
     .header-left {
       display: flex;
       align-items: center;
+      gap: 1rem;
     }
 
     .header-stats {
@@ -74,6 +83,9 @@ $code-editor-border: #3c3c3c;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
+  padding: 0 1rem;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 // Card Styles
@@ -84,6 +96,8 @@ $code-editor-border: #3c3c3c;
   @include card-shadow;
   border: 1px solid $border-color;
   @include transition();
+  min-width: 0;
+  word-wrap: break-word;
 
   &:hover {
     transform: translateY(-2px);
@@ -96,11 +110,14 @@ $code-editor-border: #3c3c3c;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 
     h2 {
       font-size: 1.25rem;
       font-weight: 600;
       color: $text-primary;
+      margin: 0;
     }
 
     i {
@@ -119,6 +136,7 @@ $code-editor-border: #3c3c3c;
   .source-badges {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 
     .source-badge {
       background: rgba($border-color, 0.3);
@@ -263,6 +281,7 @@ $code-editor-border: #3c3c3c;
   .challenge-meta {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 
     .difficulty-tag {
       padding: 0.25rem 0.75rem;
@@ -320,10 +339,12 @@ $code-editor-border: #3c3c3c;
       margin-bottom: 0.5rem;
       font-family: "Courier New", monospace;
       font-size: 0.9rem;
+      overflow-x: auto;
 
       .example-input,
       .example-output {
         margin-bottom: 0.25rem;
+        word-break: break-all;
       }
     }
   }
@@ -352,14 +373,70 @@ $code-editor-border: #3c3c3c;
   }
 }
 
-// Code Editor Card
+// Enhanced Code Editor Card with Monaco
 .code-editor-card {
   grid-column: span 2;
 
   .editor-controls {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+
+      .tool-btn {
+        background: rgba($primaryColor, 0.1);
+        border: 1px solid $primaryColor;
+        color: $primaryColor;
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        @include transition();
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          background: $primaryColor;
+          color: white;
+        }
+
+        i {
+          font-size: 0.875rem;
+        }
+      }
+
+      .theme-selector {
+        select {
+          background: $card-bg;
+          border: 1px solid $border-color;
+          color: $text-primary;
+          padding: 0.5rem;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          cursor: pointer;
+          @include transition();
+
+          &:hover {
+            border-color: $primaryColor;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: $primaryColor;
+            box-shadow: 0 0 0 2px rgba($primaryColor, 0.2);
+          }
+        }
+      }
+    }
 
     .run-btn {
       background: rgba($roast-good, 0.1);
@@ -372,6 +449,7 @@ $code-editor-border: #3c3c3c;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      white-space: nowrap;
 
       &:hover:not(:disabled) {
         background: $roast-good;
@@ -388,64 +466,101 @@ $code-editor-border: #3c3c3c;
   .code-editor-container {
     position: relative;
     margin: 1rem 0;
+    height: 400px;
+    border: 1px solid $code-editor-border;
+    border-radius: 0.5rem;
+    overflow: hidden;
 
-    .code-editor {
+    .monaco-editor-wrapper {
       width: 100%;
-      height: 300px;
-      background: $code-editor-bg;
-      border: 1px solid $code-editor-border;
-      border-radius: 0.5rem;
-      color: #e6e6e6;
-      font-family: "Fira Code", "Consolas", monospace;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      padding: 1rem;
-      resize: vertical;
-
-      &:focus {
-        outline: none;
-        border-color: $primaryColor;
-      }
+      height: 100%;
+      position: relative;
     }
 
-    .editor-overlay {
+    .editor-loading {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
       color: $text-secondary;
-      pointer-events: none;
+      z-index: 10;
 
       i {
-        font-size: 3rem;
+        font-size: 2rem;
         margin-bottom: 1rem;
-        opacity: 0.5;
+        color: $primaryColor;
       }
 
       p {
-        font-size: 1.1rem;
-        opacity: 0.7;
+        font-size: 1rem;
+        opacity: 0.8;
+      }
+    }
+
+    // Monaco Editor overrides
+    :deep(.monaco-editor) {
+      .monaco-editor-background {
+        background-color: $code-editor-bg !important;
+      }
+
+      .margin {
+        background-color: $code-editor-bg !important;
+      }
+
+      .current-line {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+      }
+
+      .selected-text {
+        background-color: rgba($primaryColor, 0.3) !important;
+      }
+
+      .cursor {
+        color: $primaryColor !important;
       }
     }
   }
 
   .editor-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    .editor-shortcuts {
+      flex: 1;
+
+      .shortcut {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $text-secondary;
+        font-size: 0.875rem;
+
+        i {
+          color: $primaryColor;
+        }
+      }
+    }
+
     .submit-btn {
-      width: 100%;
       background: linear-gradient(45deg, $roast-fire, #ff8a50);
       border: none;
       color: white;
-      padding: 1rem;
+      padding: 0.75rem 1.5rem;
       border-radius: 0.5rem;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
       @include transition();
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      min-width: 160px;
+      white-space: nowrap;
 
       &:hover:not(:disabled) {
         transform: translateY(-2px);
@@ -521,6 +636,7 @@ $code-editor-border: #3c3c3c;
 
     .roast-text {
       flex: 1;
+      min-width: 0;
 
       p {
         color: $text-primary;
@@ -528,6 +644,7 @@ $code-editor-border: #3c3c3c;
         line-height: 1.6;
         font-style: italic;
         margin: 0;
+        word-wrap: break-word;
       }
     }
   }
@@ -561,6 +678,7 @@ $code-editor-border: #3c3c3c;
     .test-summary {
       display: flex;
       gap: 1rem;
+      flex-wrap: wrap;
 
       .passed {
         color: $roast-good;
@@ -581,9 +699,10 @@ $code-editor-border: #3c3c3c;
 }
 
 // Responsive Design
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .roast-grid {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .current-challenge-card,
@@ -656,25 +775,157 @@ $code-editor-border: #3c3c3c;
   .challenge-card {
     .difficulty-selector {
       grid-template-columns: 1fr;
+      gap: 0.75rem;
     }
 
     .language-selector {
       grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
     }
   }
 
   .code-editor-card {
-    .code-editor {
+    .editor-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+
+      .editor-toolbar {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+
+    .code-editor-container {
+      height: 300px;
+      min-height: 250px;
+      margin: 0.5rem 0;
+    }
+
+    .editor-footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+
+      .editor-shortcuts {
+        text-align: center;
+
+        .shortcut {
+          justify-content: center;
+          font-size: 0.8rem;
+        }
+      }
+
+      .submit-btn {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-header {
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+  }
+
+  .roast-grid {
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+  }
+
+  .card {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  .challenge-card {
+    .difficulty-selector {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .language-selector {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .get-challenge-btn {
+      padding: 0.75rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  .current-challenge-card {
+    .challenge-examples {
+      .example {
+        font-size: 0.8rem;
+        padding: 0.5rem;
+      }
+    }
+  }
+
+  .code-editor-card {
+    .editor-controls {
+      gap: 0.5rem;
+
+      .editor-toolbar {
+        .tool-btn {
+          width: 32px;
+          height: 32px;
+        }
+
+        .theme-selector select {
+          padding: 0.4rem;
+          font-size: 0.8rem;
+        }
+      }
+
+      .run-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+      }
+    }
+
+    .code-editor-container {
       height: 250px;
-      font-size: 0.8rem;
+      min-height: 200px;
+      margin: 0.5rem 0;
+    }
+
+    .editor-footer {
+      .editor-shortcuts {
+        .shortcut {
+          font-size: 0.75rem;
+        }
+      }
+
+      .submit-btn {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .roast-message {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+
+    .roast-icon {
+      align-self: center;
+      font-size: 1.5rem;
+    }
+
+    .roast-text p {
+      font-size: 1rem;
     }
   }
 }
 
 @media (max-width: 450px) {
   .dashboard-header {
-    margin-bottom: 1rem;
-
     .header-content {
       .header-left {
         gap: 0.5rem;
@@ -688,44 +939,60 @@ $code-editor-border: #3c3c3c;
           height: 32px;
         }
       }
-
-      .header-stats {
-        flex-direction: column;
-        gap: 0.4rem;
-      }
     }
   }
 
   .roast-grid {
-    gap: 0.75rem;
+    padding: 0 0.25rem;
   }
 
-  .card {
-    padding: 0.75rem;
-    border-radius: 0.75rem;
+  .code-editor-card {
+    .code-editor-container {
+      height: 220px;
+      min-height: 180px;
+    }
   }
+}
 
+@media (max-width: 380px) {
   .challenge-card {
-    .language-selector {
-      grid-template-columns: 1fr;
+    .selection-section h4 {
+      font-size: 0.9rem;
+    }
+
+    .difficulty-option {
+      padding: 0.75rem;
+
+      .difficulty-icon {
+        font-size: 1.5rem;
+      }
+
+      span {
+        font-size: 0.85rem;
+      }
+
+      small {
+        font-size: 0.75rem;
+      }
+    }
+
+    .language-option {
+      padding: 0.5rem;
+
+      i {
+        font-size: 1.25rem;
+      }
+
+      span {
+        font-size: 0.8rem;
+      }
     }
   }
 
   .code-editor-card {
-    .code-editor {
+    .code-editor-container {
       height: 200px;
-      font-size: 0.75rem;
-      padding: 0.75rem;
-    }
-  }
-
-  .roast-message {
-    flex-direction: column;
-    text-align: center;
-    padding: 1rem;
-
-    .roast-icon {
-      align-self: center;
+      min-height: 150px;
     }
   }
 }

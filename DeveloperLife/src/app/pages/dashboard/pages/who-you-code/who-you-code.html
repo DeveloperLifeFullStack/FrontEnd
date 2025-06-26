@@ -1,1 +1,131 @@
-<p>who-you-code works!</p>
+<header class="dashboard-header">
+  <div class="header-content">
+    <div class="header-left">
+      <button
+        class="mobile-menu-toggle"
+        (click)="sideBarService.toggleSidebar()"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>Who You Code 🧬</h1>
+    </div>
+  </div>
+</header>
+
+<div class="analysis-grid">
+  <!-- Repository Input Card -->
+  <div class="card input-card">
+    <div class="card-header">
+      <h2>Analyze Your Code</h2>
+    </div>
+    <div class="card-content">
+      <div class="input-section">
+        <h4>GitHub Repository:</h4>
+        <div class="input-group">
+          <input
+            type="text"
+            class="repo-input"
+            [(ngModel)]="repoInput"
+            placeholder="username/repository-name"
+            [disabled]="isAnalyzing"
+          />
+          <button
+            class="analyze-btn"
+            (click)="analyzeRepo()"
+            [disabled]="!repoInput.trim() || isAnalyzing"
+          >
+            <i class="fas fa-search" *ngIf="!isAnalyzing"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isAnalyzing"></i>
+            {{ isAnalyzing ? 'Analyzing...' : 'Analyze' }}
+          </button>
+        </div>
+        <p class="input-hint">
+          <i class="fas fa-info-circle"></i>
+          Example: torvalds/linux
+        </p>
+      </div>
+
+      <div class="examples-section">
+        <h4>Try These Examples:</h4>
+        <div class="example-buttons">
+          <button
+            class="example-btn"
+            (click)="tryExample('torvalds/linux')"
+            [disabled]="isAnalyzing"
+          >
+            <i class="fab fa-linux"></i>
+            torvalds/linux
+          </button>
+          <button
+            class="example-btn"
+            (click)="tryExample('microsoft/vscode')"
+            [disabled]="isAnalyzing"
+          >
+            <i class="fas fa-code"></i>
+            microsoft/vscode
+          </button>
+          <button
+            class="example-btn"
+            (click)="tryExample('facebook/react')"
+            [disabled]="isAnalyzing"
+          >
+            <i class="fab fa-react"></i>
+            facebook/react
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Card -->
+  <div class="card loading-card" *ngIf="isAnalyzing">
+    <div class="card-content">
+      <div class="loading-content">
+        <i class="fas fa-dna fa-spin"></i>
+        <h3>Analyzing Your Code DNA...</h3>
+        <p>Scanning patterns, style, and personality</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Card -->
+  <div class="card result-card" *ngIf="currentResult && !isAnalyzing">
+    <div class="card-header">
+      <h2>Your Coding Personality</h2>
+      <div class="result-score" [class]="currentResult.scoreClass">
+        <div class="score-emoji">{{ currentResult.emoji }}</div>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="personality-result" [class]="currentResult.scoreClass">
+        <div class="personality-type">
+          <h3>{{ currentResult.type }}</h3>
+        </div>
+        <div class="personality-description">
+          <p>"{{ currentResult.description }}"</p>
+        </div>
+        <div class="celebrity-match">
+          <div class="match-header">
+            <i class="fas fa-star"></i>
+            <span>Celebrity Developer Match:</span>
+          </div>
+          <div class="match-name">{{ currentResult.celebrity }}</div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="share-btn" (click)="shareResult()">
+          <i class="fas fa-share-alt"></i>
+          Share Result
+        </button>
+        <button
+          class="retry-btn"
+          (click)="currentResult = null; repoInput = ''"
+        >
+          <i class="fas fa-redo"></i>
+          Try Another
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

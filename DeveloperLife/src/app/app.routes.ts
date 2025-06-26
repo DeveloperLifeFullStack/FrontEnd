@@ -1,30 +1,63 @@
 import { Routes } from '@angular/router';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
 import { authGuard } from './guards/auth-guard';
 import { loginGuard } from './guards/login-guard';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Home } from './pages/dashboard/pages/home/home';
-import { CodeCasino } from './pages/dashboard/pages/code-casino/code-casino';
-import { CodeRoast } from './pages/dashboard/pages/code-roast/code-roast';
-import { BugChase } from './pages/dashboard/pages/bug-chase/bug-chase';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 
-  { path: 'login', component: Login, canActivate: [loginGuard] },
-  { path: 'register', component: Register, canActivate: [loginGuard] },
+  // { path: 'login', component: Login, canActivate: [loginGuard] },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login').then((c) => c.Login),
+    canActivate: [loginGuard],
+  },
+  {
+    path: 'register',
+    loadComponent: () =>
+      import('./pages/register/register').then((c) => c.Register),
+    canActivate: [loginGuard],
+  },
 
   {
     path: 'dashboard',
-    component: Dashboard,
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard').then((c) => c.Dashboard),
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: Home },
-      { path: 'code-casino', component: CodeCasino },
-      { path: 'code-roast', component: CodeRoast },
-      { path: 'bug-chase', component: BugChase },
+      {
+        path: 'home',
+        loadComponent: () =>
+          import('./pages/dashboard/pages/home/home').then((c) => c.Home),
+      },
+      {
+        path: 'code-casino',
+        loadComponent: () =>
+          import('./pages/dashboard/pages/code-casino/code-casino').then(
+            (c) => c.CodeCasino
+          ),
+      },
+      {
+        path: 'code-roast',
+        loadComponent: () =>
+          import('./pages/dashboard/pages/code-roast/code-roast').then(
+            (c) => c.CodeRoast
+          ),
+      },
+      {
+        path: 'bug-chase',
+        loadComponent: () =>
+          import('./pages/dashboard/pages/bug-chase/bug-chase').then(
+            (c) => c.BugChase
+          ),
+      },
+      {
+        path: 'who-you-code',
+        loadComponent: () =>
+          import('./pages/dashboard/pages/who-you-code/who-you-code').then(
+            (c) => c.WhoYouCode
+          ),
+      },
     ],
   },
 

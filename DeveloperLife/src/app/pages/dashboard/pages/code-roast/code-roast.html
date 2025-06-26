@@ -144,11 +144,33 @@
     </div>
   </div>
 
-  <!-- Code Editor Card -->
+  <!-- Enhanced Code Editor Card with Monaco -->
   <div class="card code-editor-card" *ngIf="currentChallenge">
     <div class="card-header">
       <h2>Write Your Solution ({{ selectedLanguage | titlecase }})</h2>
       <div class="editor-controls">
+        <div class="editor-toolbar">
+          <button
+            class="tool-btn"
+            (click)="formatCode()"
+            title="Format Code (Shift+Alt+F)"
+          >
+            <i class="fas fa-magic"></i>
+          </button>
+
+          <div class="theme-selector">
+            <select
+              #themeSelect
+              (change)="switchTheme(themeSelect.value)"
+              [value]="currentTheme"
+            >
+              <option value="vs-dark">Dark</option>
+              <option value="vs-light">Light</option>
+              <option value="hc-black">High Contrast</option>
+            </select>
+          </div>
+        </div>
+
         <button class="run-btn" (click)="runCode()" [disabled]="isRunning">
           <i class="fas fa-play" *ngIf="!isRunning"></i>
           <i class="fas fa-spinner fa-spin" *ngIf="isRunning"></i>
@@ -158,24 +180,24 @@
     </div>
     <div class="card-content">
       <div class="code-editor-container">
-        <div class="editor-placeholder">
-          <!-- Mock code editor - replace with real editor like Monaco -->
-          <textarea
-            [(ngModel)]="userCode"
-            class="code-editor"
-            placeholder="// Write your solution here...
-function solution() {
-    // Your code here
-}"
-          >
-          </textarea>
-          <div class="editor-overlay" *ngIf="!userCode">
-            <i class="fas fa-code"></i>
-            <p>Start coding to get roasted! 🔥</p>
-          </div>
-        </div>
+        <!-- Monaco Editor Container -->
+        <div #monacoEditor class="monaco-editor-wrapper"></div>
+
+        <!-- Loading overlay -->
+        <!-- <div class="editor-loading" *ngIf="!isMonacoLoaded">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Loading Monaco Editor...</p>
+        </div> -->
       </div>
+
       <div class="editor-footer">
+        <div class="editor-shortcuts">
+          <span class="shortcut">
+            <i class="fas fa-keyboard"></i>
+            Ctrl+Enter to run • Ctrl+Shift+Enter to submit
+          </span>
+        </div>
+
         <button
           class="submit-btn"
           [disabled]="!userCode || isRunning"
