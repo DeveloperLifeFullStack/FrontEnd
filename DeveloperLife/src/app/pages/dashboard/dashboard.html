@@ -20,8 +20,11 @@
       <div class="profile-avatar">
         <i class="fas fa-user-circle"></i>
       </div>
-      <h3 class="profile-name">Nino Beridze</h3>
-      <p class="profile-email">ninoexample.com</p>
+      <h3 class="profile-name">
+        {{userData.user.firstName|titlecase}}
+        {{userData.user.lastName|titlecase}}
+      </h3>
+      <p class="profile-email">{{userData.user.username}}</p>
     </div>
 
     <nav class="sidebar-nav">

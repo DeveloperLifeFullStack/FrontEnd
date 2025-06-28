@@ -20,28 +20,106 @@
     </div>
     <div class="card-content">
       <div class="input-section">
-        <h4>GitHub Repository:</h4>
+        <h4>Repository Details:</h4>
+
+        <!-- GitHub Token Input -->
         <div class="input-group">
-          <input
-            type="text"
-            class="repo-input"
-            [(ngModel)]="repoInput"
-            placeholder="username/repository-name"
-            [disabled]="isAnalyzing"
-          />
+          <div class="input-wrapper">
+            <label for="github-token">
+              <i class="fas fa-key"></i>
+              GitHub Token
+            </label>
+            <input
+              id="github-token"
+              type="password"
+              class="form-input"
+              [(ngModel)]="githubToken"
+              (input)="onInputChange()"
+              placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              [disabled]="isAnalyzing"
+              [class.error]="hasFieldError('token') && showValidation"
+            />
+            <div
+              class="validation-error"
+              *ngIf="hasFieldError('token') && showValidation"
+            >
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('token') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Owner Name Input -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <label for="owner-name">
+              <i class="fab fa-github"></i>
+              Owner Name
+            </label>
+            <input
+              id="owner-name"
+              type="text"
+              class="form-input"
+              [(ngModel)]="ownerName"
+              (input)="onInputChange()"
+              placeholder="torvalds"
+              [disabled]="isAnalyzing"
+              [class.error]="hasFieldError('owner') && showValidation"
+            />
+            <div
+              class="validation-error"
+              *ngIf="hasFieldError('owner') && showValidation"
+            >
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('owner') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Repository Name Input -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <label for="repo-name">
+              <i class="fas fa-folder"></i>
+              Repository Name
+            </label>
+            <input
+              id="repo-name"
+              type="text"
+              class="form-input"
+              [(ngModel)]="repositoryName"
+              (input)="onInputChange()"
+              placeholder="linux"
+              [disabled]="isAnalyzing"
+              [class.error]="hasFieldError('repository') && showValidation"
+            />
+            <div
+              class="validation-error"
+              *ngIf="hasFieldError('repository') && showValidation"
+            >
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('repository') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Analyze Button -->
+        <div class="analyze-section">
           <button
             class="analyze-btn"
             (click)="analyzeRepo()"
-            [disabled]="!repoInput.trim() || isAnalyzing"
+            [disabled]="!isFormValid || isAnalyzing"
           >
             <i class="fas fa-search" *ngIf="!isAnalyzing"></i>
             <i class="fas fa-spinner fa-spin" *ngIf="isAnalyzing"></i>
-            {{ isAnalyzing ? 'Analyzing...' : 'Analyze' }}
+            {{ isAnalyzing ? 'Analyzing...' : 'Analyze Repository' }}
           </button>
         </div>
+
         <p class="input-hint">
           <i class="fas fa-info-circle"></i>
-          Example: torvalds/linux
+          Enter your GitHub personal access token and repository details to
+          analyze your coding personality
         </p>
       </div>
 
@@ -50,27 +128,36 @@
         <div class="example-buttons">
           <button
             class="example-btn"
-            (click)="tryExample('torvalds/linux')"
+            (click)="tryExample('torvalds', 'linux')"
             [disabled]="isAnalyzing"
           >
             <i class="fab fa-linux"></i>
-            torvalds/linux
+            <div class="example-info">
+              <span class="example-title">Linux Kernel</span>
+              <span class="example-repo">torvalds/linux</span>
+            </div>
           </button>
           <button
             class="example-btn"
-            (click)="tryExample('microsoft/vscode')"
+            (click)="tryExample('microsoft', 'vscode')"
             [disabled]="isAnalyzing"
           >
             <i class="fas fa-code"></i>
-            microsoft/vscode
+            <div class="example-info">
+              <span class="example-title">VS Code</span>
+              <span class="example-repo">microsoft/vscode</span>
+            </div>
           </button>
           <button
             class="example-btn"
-            (click)="tryExample('facebook/react')"
+            (click)="tryExample('facebook', 'react')"
             [disabled]="isAnalyzing"
           >
             <i class="fab fa-react"></i>
-            facebook/react
+            <div class="example-info">
+              <span class="example-title">React</span>
+              <span class="example-repo">facebook/react</span>
+            </div>
           </button>
         </div>
       </div>
@@ -118,10 +205,7 @@
           <i class="fas fa-share-alt"></i>
           Share Result
         </button>
-        <button
-          class="retry-btn"
-          (click)="currentResult = null; repoInput = ''"
-        >
+        <button class="retry-btn" (click)="resetForm()">
           <i class="fas fa-redo"></i>
           Try Another
         </button>

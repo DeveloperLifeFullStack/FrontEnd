@@ -21,19 +21,25 @@
       <h2>Welcome! 👋</h2>
     </div>
     <div class="card-content">
-      <p>Hello, Nino! Today is a great day to learn new technologies.</p>
+      <p>
+        Hello, {{userData.user.firstName|titlecase}}! Today is a great day to
+        learn more in technologies.
+      </p>
       <div class="user-info">
         <div class="info-item">
           <span class="label">Full Name:</span>
-          <span class="value">Nino Beridze</span>
+          <span class="value"
+            >{{userData.user.firstName|titlecase}}
+            {{userData.user.lastName|titlecase}}</span
+          >
         </div>
         <div class="info-item">
           <span class="label">Date of Birth:</span>
-          <span class="value">April 15, 1995</span>
+          <span class="value">{{userData.user.birthDate|date}}</span>
         </div>
         <div class="info-item">
           <span class="label">Username:</span>
-          <span class="value">nino_dev</span>
+          <span class="value">{{userData.user.username}}</span>
         </div>
       </div>
     </div>
@@ -43,11 +49,11 @@
       <h2>Daily Horoscope</h2>
       <div class="zodiac-sign">
         <i class="fas fa-ram"></i>
-        <span>Aries</span>
+        <span>{{userData.user.zodiac}} {{userData.user.emoji}}</span>
       </div>
     </div>
     <div class="card-content">
-      <p>Today is favorable for starting new projects. Lucky number: 7</p>
+      <p>{{userData.zodiacInfo.prediction}}</p>
       <div class="horoscope-rating">
         <div class="rating-item">
           <span>Love</span>
@@ -80,10 +86,7 @@
     <div class="card-content">
       <div class="tip-of-the-day">
         <h3>Tip of the Day:</h3>
-        <p>
-          "When writing Clean Code, always think that another developer should
-          be able to read your code."
-        </p>
+        <p>{{userData.zodiacInfo.codingTip}}</p>
       </div>
       <div class="coding-stats">
         <div class="stat-item">
@@ -112,8 +115,11 @@
           <i class="fab fa-angular"></i>
         </div>
         <div class="tech-info">
-          <h3>Angular</h3>
-          <p>Working with Angular today will be especially productive!</p>
+          <h3>{{userData.zodiacInfo.luckyTechnology}}</h3>
+          <p>
+            Working with {{userData.zodiacInfo.luckyTechnology}} today will be
+            especially productive!
+          </p>
           <div class="tech-benefits">
             <span class="benefit">+20% Productivity</span>
             <span class="benefit">Fewer Bugs</span>

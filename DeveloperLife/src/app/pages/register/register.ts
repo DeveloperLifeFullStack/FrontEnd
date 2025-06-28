@@ -7,6 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Auth } from '../../services/auth';
+import { RegistrationRequest } from '../../services/auth';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +18,7 @@ import { Router } from '@angular/router';
   styleUrl: './register.scss',
 })
 export class Register {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private auth: Auth) {}
   registerForm = new FormGroup({
     username: new FormControl('', [
       Validators.required,
@@ -71,7 +73,23 @@ export class Register {
   }
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log(this.registerForm.value);
+      const registerInfo = this.registerForm.value;
+
+      const registerData = {
+        username: registerInfo.username,
+        firstName: registerInfo.name,
+        lastName: registerInfo.surname,
+        birthDate: registerInfo.dateOfBirth,
+        stack: registerInfo.stack,
+        experience: registerInfo.experience,
+      };
+      localStorage.setItem('experience', registerData.experience!);
+      this.auth.register(registerData).subscribe({
+        next: (response) => {
+          console.log(response);
+          this.router.navigate(['/login']);
+        },
+      });
     } else {
       this.registerForm.markAllAsTouched();
     }

@@ -2,32 +2,65 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Sidebar } from '../../../../services/sidebar';
+import { CodeCasinoServices } from '../../../../services/code-casino-services';
+import { OnInit } from '@angular/core';
 
+export interface player {
+  username: string;
+  streak: number;
+  points: number;
+}
 @Component({
   selector: 'app-code-casino',
   imports: [CommonModule, FormsModule],
   templateUrl: './code-casino.html',
   styleUrl: './code-casino.scss',
 })
-export class CodeCasino {
+export class CodeCasino implements OnInit {
   selectedCode: string | null = null;
-  betAmount: number = 100;
+  betAmount: number = 0;
+  userData: any = null;
+  experience: any = null;
+  leaderboard: player[] = [];
+  userRank: number = 0;
+  userStreak: number = 0;
 
-  codeSnippetA = `function fibonacci(n) {
-  if (n <= 1) return n;
-  return fibonacci(n-1) + 
-         fibonacci(n-2);
-  return n;
-}`;
-  codeSnippetB = `function fibonacci(n) {
-  if (n <= 1) return n;
-  return fibonacci(n-1) + 
-         fibonacci(n-2);
-  return n;
-}`;
+  codeSnippetA: string = '';
+  codeSnippetB: string = '';
 
-  constructor(public sideBarService: Sidebar) {}
+  snippetId: string = '';
 
+  ngOnInit(): void {
+    this.userData = JSON.parse(localStorage.getItem('userData') ?? 'null');
+    this.experience = localStorage.getItem('experience');
+    this.getSnippets();
+    this.getLeaderboard();
+    console.log(this.leaderboard);
+  }
+  constructor(
+    public sideBarService: Sidebar,
+    private codeCasinoService: CodeCasinoServices
+  ) {}
+
+  getUserDetails() {
+    const requestDataForSnippet = {
+      language: this.userData.user.stack,
+      experience: this.experience,
+    };
+    return requestDataForSnippet;
+  }
+  getSnippets(): void {
+    this.codeCasinoService.requestSnippet(this.getUserDetails()).subscribe({
+      next: (response) => {
+        this.codeSnippetA = response.optionA;
+        this.codeSnippetB = response.optionB;
+        this.snippetId = response.snippetId;
+      },
+      error: (error) => {
+        console.log('Full errorr: ', error);
+      },
+    });
+  }
   selectCode(code: string): void {
     this.selectedCode = code;
   }
@@ -36,34 +69,60 @@ export class CodeCasino {
     this.betAmount = amount;
   }
 
-  calculateWin(): number {
-    if (!this.betAmount) return 0;
-    // Apply zodiac multiplier (1.5x for Aries)
-    return Math.floor(this.betAmount * 2 * 1.5);
-  }
-
   placeBet(): void {
     if (!this.selectedCode || !this.betAmount) return;
 
-    // Here you would implement the actual betting logic
-    console.log(
-      `Placed bet: ${this.betAmount} points on Code ${this.selectedCode}`
-    );
+    const chooseData = {
+      snippetId: this.snippetId,
+      selectedOption: this.selectedCode,
+      pointsBet: this.betAmount.toString(),
+    };
 
-    // For demo purposes, randomly determine win/loss
-    const isWin = Math.random() > 0.5;
+    this.codeCasinoService.chooseCorrect(chooseData).subscribe({
+      next: (response) => {
+        if (response.isCorrect) {
+          console.log(`🎉 You won ${response.pointsChanged} points!`);
+        } else {
+          console.log(
+            `😞 You lost ${Math.abs(response.pointsChanged)} points!`
+          );
+        }
 
-    if (isWin) {
-      const winAmount = this.calculateWin();
-      console.log(`You won ${winAmount} points!`);
-      // Update user points, streak, etc.
-    } else {
-      console.log(`You lost ${this.betAmount} points!`);
-      // Deduct points, reset streak if needed
-    }
+        this.userData.user.points = response.newTotal;
 
-    // Reset for next game
-    this.selectedCode = null;
-    this.betAmount = 100;
+        this.selectedCode = null;
+        this.betAmount = 0;
+
+        this.userData = { ...this.userData };
+        localStorage.setItem('userData', JSON.stringify(this.userData));
+        this.getSnippets();
+        this.getLeaderboard();
+      },
+      error: (err) => {
+        console.log('Error: ', err);
+      },
+    });
+  }
+  getLeaderboard(): void {
+    this.codeCasinoService.getLeaderboard().subscribe({
+      next: (response) => {
+        console.log(response);
+        this.leaderboard = response.slice(0, 3);
+
+        const currentUser = response.find(
+          (player: player) => player.username === this.userData.user.username
+        );
+
+        if (currentUser) {
+          this.userRank =
+            response.findIndex((p) => p.username === currentUser.username) + 1;
+          this.userStreak = currentUser.streak; // Get streak from leaderboard
+          console.log('User streak:', this.userStreak);
+        }
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 }

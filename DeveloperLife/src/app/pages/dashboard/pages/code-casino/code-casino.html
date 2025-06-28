@@ -12,45 +12,17 @@
     <div class="header-stats">
       <div class="stat-chip">
         <i class="fas fa-coins"></i>
-        <span>1,250 Points</span>
+        <span>{{userData?.user?.points || 'Loading...'}} Points</span>
       </div>
       <div class="stat-chip streak">
         <i class="fas fa-fire"></i>
-        <span>5 Streak</span>
+        <span>{{userStreak}} Streak</span>
       </div>
     </div>
   </div>
 </header>
 
 <div class="casino-grid">
-  <!-- Game Status Card -->
-  <div class="card game-status-card">
-    <div class="card-header">
-      <h2>Today's Challenge</h2>
-      <div class="challenge-timer">
-        <i class="fas fa-clock"></i>
-        <span>23:45:12</span>
-      </div>
-    </div>
-    <div class="card-content">
-      <div class="challenge-progress">
-        <div class="progress-info">
-          <span>Daily Progress: 3/5</span>
-          <span class="completion">60%</span>
-        </div>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 60%"></div>
-        </div>
-      </div>
-      <div class="zodiac-luck">
-        <div class="luck-multiplier">
-          <i class="fas fa-star"></i>
-          <span>Aries Luck: 1.5x</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Code Battle Arena -->
   <div class="card code-battle-card">
     <div class="card-header">
@@ -118,9 +90,7 @@
           </div>
         </div>
         <div class="potential-win">
-          <span
-            >Potential Win: <strong>{{ calculateWin() }} points</strong></span
-          >
+          <span>Bet Amount: <strong>{{ betAmount }} points</strong></span>
         </div>
         <button
           class="place-bet-btn"
@@ -143,20 +113,12 @@
     <div class="card-content">
       <div class="stat-grid">
         <div class="stat-item">
-          <span class="stat-number">87%</span>
-          <span class="stat-label">Win Rate</span>
+          <span class="stat-number">{{userData.user.points}}</span>
+          <span class="stat-label">Current Points</span>
         </div>
         <div class="stat-item">
-          <span class="stat-number">342</span>
-          <span class="stat-label">Games Won</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">15</span>
-          <span class="stat-label">Best Streak</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">12.5k</span>
-          <span class="stat-label">Total Earned</span>
+          <span class="stat-number">{{userStreak}}</span>
+          <span class="stat-label">Current Streak</span>
         </div>
       </div>
     </div>
@@ -170,35 +132,29 @@
     </div>
     <div class="card-content">
       <div class="leaderboard-list">
-        <div class="leaderboard-item top-player">
-          <div class="rank">1</div>
+        @for(player of leaderboard; track player.username; let i =$index){
+        <div class="leaderboard-item" [class.top-player]="i===0">
+          <div class="rank">{{i+1}}</div>
           <div class="player-info">
-            <span class="player-name">CodeMaster_42</span>
-            <span class="player-score">8,750 pts</span>
+            <span class="player-name">{{player.username}}</span>
+            <span class="player-score">{{player.points}}</span>
           </div>
+          @if(i === 0){
           <div class="crown">👑</div>
+          }
         </div>
-        <div class="leaderboard-item">
-          <div class="rank">2</div>
-          <div class="player-info">
-            <span class="player-name">DebugQueen</span>
-            <span class="player-score">7,320 pts</span>
-          </div>
-        </div>
-        <div class="leaderboard-item">
-          <div class="rank">3</div>
-          <div class="player-info">
-            <span class="player-name">SyntaxNinja</span>
-            <span class="player-score">6,890 pts</span>
-          </div>
-        </div>
+        }@empty {
+        <div class="no-players">No players found</div>
+        } @if(userRank>0){
         <div class="leaderboard-item current-user">
-          <div class="rank">8</div>
+          <div class="rank">{{userRank}}</div>
           <div class="player-info">
-            <span class="player-name">nino_dev (You)</span>
-            <span class="player-score">4,250 pts</span>
+            <span class="player-name">{{userData?.user?.username}} (You)</span>
+            <span class="player-score">{{userData?.user?.points}} pts</span>
           </div>
         </div>
+
+        }
       </div>
     </div>
   </div>

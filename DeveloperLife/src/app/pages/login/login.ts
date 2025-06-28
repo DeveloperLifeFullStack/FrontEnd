@@ -7,6 +7,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Auth } from '../../services/auth';
+import { UserDataService } from '../../services/user-data-service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +17,11 @@ import { Router } from '@angular/router';
   styleUrl: './login.scss',
 })
 export class Login {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private auth: Auth,
+    private userDataService: UserDataService
+  ) {}
   loginForm = new FormGroup({
     username: new FormControl('', [
       Validators.required,
@@ -28,11 +34,16 @@ export class Login {
   }
   onSubmit() {
     if (this.loginForm.valid) {
-      setTimeout(() => {
-        console.log('logged in successfully');
-      }, 1500);
-      localStorage.setItem('token', '1232');
-      this.router.navigate(['/dashboard']);
+      const loginData = {
+        username: this.loginForm.value.username!,
+      };
+      this.auth.login(loginData).subscribe({
+        next: (response) => {
+          localStorage.setItem('userData', JSON.stringify(response));
+          localStorage.setItem('token', JSON.stringify(response.token));
+          this.router.navigate(['/dashboard']);
+        },
+      });
     }
   }
   redirectToRegister() {

@@ -6,6 +6,8 @@ $dna-secondary: #8b5cf6;
 $dna-good: #10b981;
 $dna-bad: #ef4444;
 $dna-neutral: #f59e0b;
+$error-color: #ef4444;
+$error-bg: rgba(239, 68, 68, 0.1);
 
 // Container constraints
 * {
@@ -44,7 +46,7 @@ $dna-neutral: #f59e0b;
 // Analysis Grid
 .analysis-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
   padding: 0 1rem;
@@ -102,50 +104,105 @@ $dna-neutral: #f59e0b;
 
     h4 {
       color: $text-primary;
-      margin-bottom: 1rem;
-      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
     }
 
     .input-group {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
 
-      .repo-input {
-        flex: 1;
-        padding: 0.75rem;
-        border: 2px solid $border-color;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-        @include transition();
-        min-width: 200px;
+      .input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
 
-        &:focus {
-          outline: none;
-          border-color: $dna-primary;
-          box-shadow: 0 0 0 3px rgba($dna-primary, 0.1);
+        label {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: $text-primary;
+          font-weight: 500;
+          font-size: 0.9rem;
+
+          i {
+            color: $dna-primary;
+            width: 16px;
+            text-align: center;
+          }
         }
 
-        &:disabled {
-          opacity: 0.5;
-          background: rgba($border-color, 0.3);
+        .form-input {
+          padding: 0.875rem;
+          border: 2px solid $border-color;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+          @include transition();
+          background: $card-bg;
+          color: $text-primary;
+
+          &:focus {
+            outline: none;
+            border-color: $dna-primary;
+            box-shadow: 0 0 0 3px rgba($dna-primary, 0.1);
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            background: rgba($border-color, 0.3);
+            cursor: not-allowed;
+          }
+
+          &.error {
+            border-color: $error-color;
+            background: $error-bg;
+
+            &:focus {
+              border-color: $error-color;
+              box-shadow: 0 0 0 3px rgba($error-color, 0.1);
+            }
+          }
+
+          &::placeholder {
+            color: $text-secondary;
+            opacity: 0.7;
+          }
+        }
+
+        .validation-error {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: $error-color;
+          font-size: 0.8rem;
+          font-weight: 500;
+          margin-top: 0.25rem;
+
+          i {
+            font-size: 0.75rem;
+          }
         }
       }
+    }
+
+    .analyze-section {
+      margin: 2rem 0 1.5rem 0;
 
       .analyze-btn {
         background: linear-gradient(45deg, $dna-primary, $dna-secondary);
         border: none;
         color: white;
-        padding: 0.75rem 1.5rem;
+        padding: 1rem 2rem;
         border-radius: 0.5rem;
         font-weight: 600;
         cursor: pointer;
         @include transition();
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
-        white-space: nowrap;
+        width: 100%;
+        font-size: 1rem;
 
         &:hover:not(:disabled) {
           transform: translateY(-2px);
@@ -155,6 +212,7 @@ $dna-neutral: #f59e0b;
         &:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+          transform: none;
         }
       }
     }
@@ -164,11 +222,14 @@ $dna-neutral: #f59e0b;
       font-size: 0.875rem;
       margin: 0;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 0.5rem;
+      line-height: 1.5;
 
       i {
         color: $dna-primary;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
       }
     }
   }
@@ -178,6 +239,7 @@ $dna-neutral: #f59e0b;
       color: $text-primary;
       margin-bottom: 1rem;
       font-size: 1rem;
+      font-weight: 600;
     }
 
     .example-buttons {
@@ -187,21 +249,23 @@ $dna-neutral: #f59e0b;
 
       .example-btn {
         background: rgba($dna-primary, 0.1);
-        border: 1px solid $dna-primary;
-        color: $dna-primary;
-        padding: 0.75rem 1rem;
+        border: 1px solid rgba($dna-primary, 0.3);
+        color: $text-primary;
+        padding: 1rem;
         border-radius: 0.5rem;
         cursor: pointer;
         @include transition();
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        gap: 1rem;
         font-weight: 500;
+        text-align: left;
 
         &:hover:not(:disabled) {
           background: $dna-primary;
           color: white;
           transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba($dna-primary, 0.3);
         }
 
         &:disabled {
@@ -210,12 +274,28 @@ $dna-neutral: #f59e0b;
         }
 
         i {
-          font-size: 1.25rem;
+          font-size: 1.5rem;
+          flex-shrink: 0;
+          width: 24px;
+          text-align: center;
         }
 
-        span {
-          font-family: "Monaco", "Consolas", monospace;
-          font-size: 0.9rem;
+        .example-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+          min-width: 0;
+
+          .example-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+          }
+
+          .example-repo {
+            font-family: "Monaco", "Consolas", monospace;
+            font-size: 0.8rem;
+            opacity: 0.8;
+          }
         }
       }
     }
@@ -224,8 +304,6 @@ $dna-neutral: #f59e0b;
 
 // Loading Card
 .loading-card {
-  grid-column: span 2;
-
   .loading-content {
     text-align: center;
     padding: 3rem;
@@ -252,8 +330,6 @@ $dna-neutral: #f59e0b;
 
 // Result Card
 .result-card {
-  grid-column: span 2;
-
   .result-score {
     display: flex;
     align-items: center;
@@ -416,11 +492,6 @@ $dna-neutral: #f59e0b;
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-
-  .loading-card,
-  .result-card {
-    grid-column: span 1;
-  }
 }
 
 @media (max-width: 768px) {
@@ -477,15 +548,39 @@ $dna-neutral: #f59e0b;
   .input-card {
     .input-section {
       .input-group {
-        flex-direction: column;
+        margin-bottom: 1.25rem;
+      }
 
-        .repo-input {
-          min-width: auto;
-        }
+      .analyze-section {
+        margin: 1.5rem 0 1rem 0;
 
         .analyze-btn {
-          width: 100%;
-          justify-content: center;
+          padding: 0.875rem 1.5rem;
+        }
+      }
+    }
+
+    .examples-section {
+      .example-buttons {
+        gap: 0.5rem;
+
+        .example-btn {
+          padding: 0.875rem;
+          gap: 0.75rem;
+
+          i {
+            font-size: 1.25rem;
+          }
+
+          .example-info {
+            .example-title {
+              font-size: 0.9rem;
+            }
+
+            .example-repo {
+              font-size: 0.75rem;
+            }
+          }
         }
       }
     }
@@ -524,11 +619,37 @@ $dna-neutral: #f59e0b;
 
   .analysis-grid {
     padding: 0 0.25rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .card {
     padding: 0.75rem;
     border-radius: 0.75rem;
+  }
+
+  .input-card {
+    .input-section {
+      .input-group {
+        .input-wrapper {
+          .form-input {
+            padding: 0.75rem;
+            font-size: 0.8rem;
+          }
+
+          label {
+            font-size: 0.85rem;
+          }
+        }
+      }
+
+      .analyze-section {
+        .analyze-btn {
+          padding: 0.75rem 1.25rem;
+          font-size: 0.9rem;
+        }
+      }
+    }
   }
 
   .loading-card {
@@ -580,4 +701,23 @@ $dna-neutral: #f59e0b;
 
 .result-card {
   animation: fadeIn 0.8s ease-out;
+}
+
+// Input focus animations
+.form-input {
+  &:focus {
+    animation: inputFocus 0.3s ease-out;
+  }
+}
+
+@keyframes inputFocus {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
