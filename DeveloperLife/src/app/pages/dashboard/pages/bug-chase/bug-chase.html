@@ -29,7 +29,7 @@
 <div class="game-container">
   <!-- Game Canvas -->
   <div class="game-canvas-container">
-    <canvas #gameCanvas class="game-canvas" width="800" height="400"> </canvas>
+    <canvas #gameCanvas class="game-canvas" width="800" height="400"></canvas>
 
     <!-- Start Screen -->
     <div class="game-overlay" *ngIf="!isPlaying && !isGameOver">
@@ -80,9 +80,17 @@
             <i class="fas fa-coffee"></i>
             <span>Coffee Collected: {{ coffeeCount }}</span>
           </div>
-          <div class="stat" *ngIf="highScore > 0">
+          <div class="stat" *ngIf="userHighScore > 0">
             <i class="fas fa-crown"></i>
-            <span>Best Score: {{ highScore }}</span>
+            <span>Personal Best: {{ userHighScore }}</span>
+          </div>
+          <div class="stat" *ngIf="score > userHighScore && isSubmittingScore">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Submitting new high score...</span>
+          </div>
+          <div class="stat" *ngIf="score > userHighScore && !isSubmittingScore">
+            <i class="fas fa-star"></i>
+            <span>🎉 New Personal Best!</span>
           </div>
         </div>
         <div class="game-over-actions">
@@ -144,25 +152,43 @@
       </div>
     </div>
 
-    <!-- High Scores -->
+    <!-- Leaderboard -->
     <div class="card scores-card">
       <div class="card-header">
-        <h3>🏆 Your Best Scores</h3>
+        <h3>🏆 Leaderboard</h3>
       </div>
       <div class="card-content">
         <div class="score-list">
+          <!-- Top 4 Players -->
           <div
             class="score-item"
-            *ngFor="let scoreData of bestScores; let i = index"
+            *ngFor="let player of topPlayers; let i = index"
           >
             <span class="rank">{{ i + 1 }}</span>
             <div class="score-details">
-              <span class="points">{{ scoreData }}pts  </span>
-              <small class="coffee-count">☕ </small>
+              <span class="points">{{ player.score }}pts</span>
+              <small class="username">{{ player.username }}</small>
             </div>
           </div>
-          <div class="no-scores" *ngIf="bestScores.length === 0">
-            <p>No scores yet! Start playing to set your first record.</p>
+
+          <!-- Current User (if not in top 4) -->
+          <div
+            class="score-item user-score"
+            *ngIf="userRank && userRank.position > 4"
+          >
+            <span class="rank">{{ userRank.position }}</span>
+            <div class="score-details">
+              <span class="points">{{ userRank.score }}pts</span>
+              <small class="username">{{ userRank.username }} (You)</small>
+            </div>
+          </div>
+
+          <!-- No scores message -->
+          <div class="score-item no-user-score" *ngIf="topPlayers.length === 0">
+            <span class="rank">-</span>
+            <div class="score-details">
+              <span class="points">Play to get ranked!</span>
+            </div>
           </div>
         </div>
       </div>

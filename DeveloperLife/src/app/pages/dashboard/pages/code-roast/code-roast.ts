@@ -195,7 +195,7 @@ export class CodeRoast implements AfterViewInit, OnDestroy, OnInit {
 
     try {
       const editorOptions = {
-        value: this.userCode || this.getStarterCode(),
+        value: this.getStarterCode(),
         language: this.monacoLanguageMap[this.selectedLanguage] || 'javascript',
         theme: this.currentTheme,
         automaticLayout: true,
@@ -214,7 +214,7 @@ export class CodeRoast implements AfterViewInit, OnDestroy, OnInit {
         this.monacoEditorRef.nativeElement,
         editorOptions
       );
-
+      this.userCode = this.getStarterCode();
       this.editor.onDidChangeModelContent(() => {
         this.userCode = this.editor.getValue();
       });
@@ -228,12 +228,6 @@ export class CodeRoast implements AfterViewInit, OnDestroy, OnInit {
         monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter,
         () => this.submitForRoast()
       );
-
-      if (!this.userCode) {
-        const starterCode = this.getStarterCode();
-        this.editor.setValue(starterCode);
-        this.userCode = starterCode;
-      }
 
       this.isMonacoLoaded = true;
     } catch (error) {
@@ -337,8 +331,25 @@ public:
     }
     this.codeRoastService.submitCode(this.userCode).subscribe({
       next: (response) => {
-        this.lastRoast = response;
-        console.log(this.lastRoast);
+        this.lastRoast = {
+          score: response.rating,
+          scoreClass:
+            response.rating >= 7
+              ? 'good'
+              : response.rating >= 4
+              ? 'neutral'
+              : 'bad',
+          emoji:
+            response.rating >= 7 ? '🎉' : response.score >= 4 ? '😐' : '💀',
+          type:
+            response.rating >= 7
+              ? 'good'
+              : response.rating >= 4
+              ? 'neutral'
+              : 'bad',
+          message: response.message,
+        };
+        console.log(response);
       },
       error: (err) => {
         console.log('error: ', err);

@@ -411,6 +411,27 @@ $game-warning: #ffa726;
       }
     }
 
+    // User score styling (distinct from top 3)
+    &.user-score {
+      background: linear-gradient(
+        90deg,
+        rgba($game-primary, 0.3),
+        rgba($game-primary, 0.1)
+      );
+      border: 1px solid rgba($game-primary, 0.5);
+      border-style: dashed;
+
+      .rank {
+        background: $game-primary;
+        color: white;
+      }
+
+      .username {
+        font-weight: 700;
+        color: $game-primary;
+      }
+    }
+
     .rank {
       width: 35px;
       height: 35px;
@@ -429,9 +450,16 @@ $game-warning: #ffa726;
       color: $game-success;
       font-size: 1.1rem;
     }
+
+    .username {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      margin-top: 0.25rem;
+    }
   }
 
-  .no-scores {
+  .no-scores,
+  .no-user-score {
     text-align: center;
     padding: 2rem 1rem;
     color: $text-secondary;
@@ -675,4 +703,10 @@ $game-warning: #ffa726;
 
 .instruction-item:hover i {
   animation: bounce 0.4s ease-out;
+}
+
+// User score special animation
+.user-score {
+  animation: pulse 2s ease-in-out infinite;
+  animation-delay: 1s;
 }

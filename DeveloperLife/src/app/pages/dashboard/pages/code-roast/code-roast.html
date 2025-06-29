@@ -124,7 +124,7 @@
           </div>
         </div>
 
-        <button class="run-btn" (click)="runCode()" [disabled]="isRunning">
+        <button class="run-btn" (click)="runCode()">
           <i class="fas fa-play" *ngIf="!isRunning"></i>
           <i class="fas fa-spinner fa-spin" *ngIf="isRunning"></i>
           {{ isRunning ? 'Running...' : 'Run Tests' }}
@@ -135,27 +135,10 @@
       <div class="code-editor-container">
         <!-- Monaco Editor Container -->
         <div #monacoEditor class="monaco-editor-wrapper"></div>
-
-        <!-- Loading overlay -->
-        <!-- <div class="editor-loading" *ngIf="!isMonacoLoaded">
-          <i class="fas fa-spinner fa-spin"></i>
-          <p>Loading Monaco Editor...</p>
-        </div> -->
       </div>
 
       <div class="editor-footer">
-        <div class="editor-shortcuts">
-          <span class="shortcut">
-            <i class="fas fa-keyboard"></i>
-            Ctrl+Enter to run • Ctrl+Shift+Enter to submit
-          </span>
-        </div>
-
-        <button
-          class="submit-btn"
-          [disabled]="!userCode || isRunning"
-          (click)="submitForRoast()"
-        >
+        <button class="submit-btn" (click)="submitForRoast()">
           <i class="fas fa-fire"></i>
           Submit for Roasting
         </button>
