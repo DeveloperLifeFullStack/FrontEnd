@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { Auth } from '../../services/auth';
 import { RegistrationRequest } from '../../services/auth';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -18,7 +19,11 @@ import { RegistrationRequest } from '../../services/auth';
   styleUrl: './register.scss',
 })
 export class Register {
-  constructor(private router: Router, private auth: Auth) {}
+  constructor(
+    private router: Router,
+    private auth: Auth,
+    private toastr: ToastrService
+  ) {}
   registerForm = new FormGroup({
     username: new FormControl('', [
       Validators.required,
@@ -32,8 +37,18 @@ export class Register {
     experience: new FormControl('', [Validators.required]),
   });
 
-  public stacks = ['React', 'Angular', 'Vue', '.NET', 'Python'];
-  public experiences = ['Novice', 'Junior', 'Middle', 'Senior'];
+  public stacks = [
+    'C# / .NET',
+    'Node.js',
+    'Python',
+    'Java',
+    'Go',
+    'Rust',
+    'PHP',
+    'Ruby',
+    'Angular',
+  ];
+  public experiences = ['Junior', 'Middle', 'Senior'];
 
   showStackDropdown = false;
   showExperienceDropdown = false;
@@ -87,7 +102,17 @@ export class Register {
       this.auth.register(registerData).subscribe({
         next: (response) => {
           console.log(response);
-          this.router.navigate(['/login']);
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 1500);
+          this.toastr.success(
+            'Registration success',
+            'Navigating to the log in page'
+          );
+        },
+        error: (err) => {
+          console.log(err);
+          this.toastr.error('Registration failed', `${err.error}`);
         },
       });
     } else {

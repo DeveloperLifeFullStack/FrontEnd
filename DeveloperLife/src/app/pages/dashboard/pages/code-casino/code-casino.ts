@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Sidebar } from '../../../../services/sidebar';
 import { CodeCasinoServices } from '../../../../services/code-casino-services';
 import { OnInit } from '@angular/core';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 export interface player {
   username: string;
@@ -39,7 +40,8 @@ export class CodeCasino implements OnInit {
   }
   constructor(
     public sideBarService: Sidebar,
-    private codeCasinoService: CodeCasinoServices
+    private codeCasinoService: CodeCasinoServices,
+    private toastr: ToastrService
   ) {}
 
   getUserDetails() {
@@ -81,10 +83,16 @@ export class CodeCasino implements OnInit {
     this.codeCasinoService.chooseCorrect(chooseData).subscribe({
       next: (response) => {
         if (response.isCorrect) {
-          console.log(`🎉 You won ${response.pointsChanged} points!`);
+          this.toastr.success(
+            `🎉 You won ${response.pointsChanged} points!`,
+            'Correct Choice!',
+            { timeOut: 1500 }
+          );
         } else {
-          console.log(
-            `😞 You lost ${Math.abs(response.pointsChanged)} points!`
+          this.toastr.error(
+            `😞 You lost ${Math.abs(response.pointsChanged)} points!`,
+            'Wrong Choice!',
+            { timeOut: 5000 }
           );
         }
 

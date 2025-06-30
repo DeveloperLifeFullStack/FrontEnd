@@ -122,45 +122,6 @@
           analyze your coding personality
         </p>
       </div>
-
-      <div class="examples-section">
-        <h4>Try These Examples:</h4>
-        <div class="example-buttons">
-          <button
-            class="example-btn"
-            (click)="tryExample('torvalds', 'linux')"
-            [disabled]="isAnalyzing"
-          >
-            <i class="fab fa-linux"></i>
-            <div class="example-info">
-              <span class="example-title">Linux Kernel</span>
-              <span class="example-repo">torvalds/linux</span>
-            </div>
-          </button>
-          <button
-            class="example-btn"
-            (click)="tryExample('microsoft', 'vscode')"
-            [disabled]="isAnalyzing"
-          >
-            <i class="fas fa-code"></i>
-            <div class="example-info">
-              <span class="example-title">VS Code</span>
-              <span class="example-repo">microsoft/vscode</span>
-            </div>
-          </button>
-          <button
-            class="example-btn"
-            (click)="tryExample('facebook', 'react')"
-            [disabled]="isAnalyzing"
-          >
-            <i class="fab fa-react"></i>
-            <div class="example-info">
-              <span class="example-title">React</span>
-              <span class="example-repo">facebook/react</span>
-            </div>
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -179,24 +140,29 @@
   <div class="card result-card" *ngIf="currentResult && !isAnalyzing">
     <div class="card-header">
       <h2>Your Coding Personality</h2>
-      <div class="result-score" [class]="currentResult.scoreClass">
-        <div class="score-emoji">{{ currentResult.emoji }}</div>
+      <div class="result-score" [class]="currentResult.type">
+        <div class="score-emoji">
+          <img src="{{ currentResult.image_url }}" alt="" />
+        </div>
       </div>
     </div>
     <div class="card-content">
-      <div class="personality-result" [class]="currentResult.scoreClass">
+      <div class="personality-result" [class]="currentResult.match">
         <div class="personality-type">
           <h3>{{ currentResult.type }}</h3>
         </div>
         <div class="personality-description">
-          <p>"{{ currentResult.description }}"</p>
+          <p>
+            "{{ currentResult.strengths }}"<br />
+            "{{ currentResult.weaknesses}}"
+          </p>
         </div>
         <div class="celebrity-match">
           <div class="match-header">
             <i class="fas fa-star"></i>
-            <span>Celebrity Developer Match:</span>
+            <span> Developer Match:</span>
           </div>
-          <div class="match-name">{{ currentResult.celebrity }}</div>
+          <div class="match-name">{{ currentResult.match }}</div>
         </div>
       </div>
 

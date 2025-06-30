@@ -781,7 +781,47 @@ $dating-love: #ff69b4;
           background: rgba($dating-primary, 0.7);
         }
       }
+      .chat-error {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba($dating-danger, 0.1);
+        border: 1px solid rgba($dating-danger, 0.3);
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        animation: fadeIn 0.3s ease-out;
 
+        .error-message {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: $dating-danger;
+          font-size: 0.9rem;
+
+          i {
+            font-size: 1rem;
+          }
+        }
+
+        .dismiss-error {
+          background: none;
+          border: none;
+          color: $dating-danger;
+          cursor: pointer;
+          padding: 0.25rem;
+          border-radius: 0.25rem;
+          @include transition();
+
+          &:hover {
+            background: rgba($dating-danger, 0.1);
+          }
+
+          i {
+            font-size: 0.8rem;
+          }
+        }
+      }
       .message {
         display: flex;
         flex-direction: column;

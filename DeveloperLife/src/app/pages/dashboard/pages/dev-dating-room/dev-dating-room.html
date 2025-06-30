@@ -49,37 +49,6 @@
           </button>
         </div>
       </div>
-
-      <div class="setup-section">
-        <h4>Looking for:</h4>
-        <div class="preference-options">
-          <button
-            class="option-btn"
-            [class.active]="userProfile.preference === 'all'"
-            (click)="userProfile.preference = 'all'"
-          >
-            <i class="fas fa-users"></i>
-            All Developers
-          </button>
-          <button
-            class="option-btn"
-            [class.active]="userProfile.preference === 'frontend'"
-            (click)="userProfile.preference = 'frontend'"
-          >
-            <i class="fab fa-html5"></i>
-            Frontend
-          </button>
-          <button
-            class="option-btn"
-            [class.active]="userProfile.preference === 'backend'"
-            (click)="userProfile.preference = 'backend'"
-          >
-            <i class="fas fa-server"></i>
-            Backend
-          </button>
-        </div>
-      </div>
-
       <div class="setup-section">
         <h4>Your Bio:</h4>
         <textarea
@@ -268,6 +237,15 @@
       </div>
       <div class="card-content">
         <div class="chat-messages" #chatMessagesContainer>
+          <div class="chat-error" *ngIf="chatError">
+            <div class="error-message">
+              <i class="fas fa-exclamation-triangle"></i>
+              {{ chatError }}
+            </div>
+            <button class="dismiss-error" (click)="clearChatError()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
           <div
             class="message"
             *ngFor="let message of chatMessages"

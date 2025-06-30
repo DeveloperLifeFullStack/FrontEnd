@@ -337,6 +337,14 @@ $error-bg: rgba(239, 68, 68, 0.1);
 
     .score-emoji {
       font-size: 2rem;
+      img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid $dna-primary;
+        box-shadow: 0 4px 12px rgba($dna-primary, 0.3);
+      }
     }
 
     &.good .score-emoji {

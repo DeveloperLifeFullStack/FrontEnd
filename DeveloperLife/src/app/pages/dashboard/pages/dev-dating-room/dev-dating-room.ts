@@ -1,18 +1,12 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
-import { Sidebar } from '../../../../services/sidebar'; // Commented out for debugging
+import { trigger, style, transition, animate } from '@angular/animations';
+import { Sidebar } from '../../../../services/sidebar';
+import { DatingAppService } from '../../../../services/dating-app-service';
 
 interface UserProfile {
   gender: 'male' | 'female' | 'other' | '';
-  preference: 'all' | 'frontend' | 'backend' | '';
   bio: string;
 }
 
@@ -57,40 +51,34 @@ interface Stats {
 export class DevDatingRoom {
   @ViewChild('chatMessagesContainer') chatMessagesRef!: ElementRef;
 
-  // User setup
   userProfile: UserProfile = {
     gender: '',
-    preference: '',
     bio: '',
   };
   isSetupComplete = false;
 
-  // Current state
   currentProfile: DeveloperProfile | null = null;
   profiles: DeveloperProfile[] = [];
-  currentProfileIndex = 0;
   isSwipeAnimating = false;
 
-  // Match system
   showMatchNotification = false;
   lastMatch: DeveloperProfile | null = null;
   matches: DeveloperProfile[] = [];
 
-  // Chat system
   showChat = false;
   currentChatPartner: DeveloperProfile | null = null;
   chatMessages: ChatMessage[] = [];
   currentMessage = '';
   isTyping = false;
+  currentConversationId: string = '';
+  chatError: string = '';
 
-  // Stats
   stats: Stats = {
     likes: 0,
     matches: 0,
     viewed: 0,
   };
 
-  // Mock developer profiles
   private mockProfiles: DeveloperProfile[] = [
     {
       id: 1,
@@ -154,27 +142,11 @@ export class DevDatingRoom {
     },
   ];
 
-  // AI chat responses
-  private chatResponses = [
-    "That's really interesting! I've been working on something similar.",
-    'I totally agree! Have you tried using any specific frameworks for that?',
-    'Wow, that sounds like a challenging project. How did you approach it?',
-    "Nice! I'm always excited to meet other developers who are passionate about clean code.",
-    "That's awesome! I'd love to hear more about your experience with that technology.",
-    'Cool! Maybe we could collaborate on something together sometime?',
-    "I've been meaning to learn more about that. Any resources you'd recommend?",
-    "That's exactly the kind of problem-solving mindset I appreciate!",
-    'Interesting perspective! I never thought about it that way.',
-    'That project sounds really impressive. What was the most challenging part?',
-  ];
-
-  constructor(public sideBarService: Sidebar) {
+  constructor(
+    public sideBarService: Sidebar,
+    private datingAppService: DatingAppService
+  ) {
     this.initializeProfiles();
-  }
-
-  // Temporary method for mobile menu (replace with your actual sidebar service later)
-  toggleSidebar(): void {
-    console.log('Sidebar toggle clicked');
   }
 
   initializeProfiles(): void {
@@ -183,11 +155,7 @@ export class DevDatingRoom {
   }
 
   isSetupValid(): boolean {
-    return !!(
-      this.userProfile.gender &&
-      this.userProfile.preference &&
-      this.userProfile.bio.trim()
-    );
+    return !!(this.userProfile.gender && this.userProfile.bio.trim());
   }
 
   completeSetup(): void {
@@ -222,20 +190,15 @@ export class DevDatingRoom {
 
     if (profileCard) {
       profileCard.classList.add(`swipe-${direction}`);
-
       setTimeout(() => {
         this.handleSwipe(liked);
         this.isSwipeAnimating = false;
-
-        // Remove animation class after animation completes
-        setTimeout(() => {
-          if (profileCard) {
-            profileCard.classList.remove(`swipe-${direction}`);
-          }
-        }, 100);
-      }, 500); // Animation duration
+        setTimeout(
+          () => profileCard?.classList.remove(`swipe-${direction}`),
+          100
+        );
+      }, 500);
     } else {
-      // Fallback if no animation
       this.handleSwipe(liked);
       this.isSwipeAnimating = false;
     }
@@ -250,13 +213,11 @@ export class DevDatingRoom {
       this.stats.likes++;
       this.currentProfile.liked = true;
 
-      // Simulate match (50% chance for demo purposes)
       if (Math.random() > 0.5) {
         this.createMatch(this.currentProfile);
       }
     }
 
-    // Remove current profile and load next
     this.profiles.shift();
     this.loadNextProfile();
   }
@@ -285,9 +246,93 @@ export class DevDatingRoom {
     this.showChat = false;
     this.currentChatPartner = null;
     this.chatMessages = [];
+    this.currentConversationId = '';
+  }
+
+  sendMessage(): void {
+    if (!this.currentMessage.trim() || this.isTyping) return;
+
+    const userMessage = this.currentMessage.trim();
+
+    this.chatMessages.push({
+      text: userMessage,
+      time: new Date(),
+      isOwn: true,
+    });
+
+    this.currentMessage = '';
+    this.scrollChatToBottom();
+    this.isTyping = true;
+    this.chatError = '';
+
+    const messagePayload = {
+      message: userMessage,
+      conversationId: this.currentConversationId || undefined,
+      userProfile: {
+        name: 'You',
+        role: 'Developer',
+        techStack: [],
+      },
+      partnerProfile: this.currentChatPartner
+        ? {
+            name: this.currentChatPartner.name,
+            role: this.currentChatPartner.role,
+            techStack: this.currentChatPartner.techStack,
+          }
+        : undefined,
+    };
+
+    this.datingAppService.chatAI(messagePayload).subscribe({
+      next: (response: any) => {
+        if (response.conversationId) {
+          this.currentConversationId = response.conversationId;
+        }
+
+        let aiMessage = '';
+        if (response.reply) {
+          aiMessage = response.reply;
+        } else if (response.message) {
+          aiMessage = response.message; // Fixed: was response.response
+        } else if (response.text) {
+          aiMessage = response.text;
+        } else if (response.content) {
+          aiMessage = response.content;
+        } else {
+          aiMessage =
+            "I received your message but I'm having trouble responding right now.";
+        }
+
+        this.chatMessages.push({
+          text: aiMessage,
+          time: response.timestamp ? new Date(response.timestamp) : new Date(),
+          isOwn: false,
+        });
+
+        this.isTyping = false;
+        this.scrollChatToBottom();
+      },
+      error: (error) => {
+        console.error('Chat API error:', error);
+        this.chatError = 'Failed to send message. Please try again.';
+        this.isTyping = false;
+        this.addFallbackResponse();
+      },
+    });
+  }
+
+  private addFallbackResponse(): void {
+    setTimeout(() => {
+      this.chatMessages.push({
+        text: "I'm having trouble connecting right now 🤖 But I'm still here to chat!",
+        time: new Date(),
+        isOwn: false,
+      });
+      this.scrollChatToBottom();
+    }, 1500);
   }
 
   private initializeChat(): void {
+    this.currentConversationId = '';
     this.chatMessages = [
       {
         text: `Hey! Thanks for the match! I'm excited to chat with a fellow developer 😊`,
@@ -298,52 +343,8 @@ export class DevDatingRoom {
     this.scrollChatToBottom();
   }
 
-  sendMessage(): void {
-    if (!this.currentMessage.trim() || this.isTyping) return;
-
-    // Add user message
-    this.chatMessages.push({
-      text: this.currentMessage,
-      time: new Date(),
-      isOwn: true,
-    });
-
-    const userMessage = this.currentMessage;
-    this.currentMessage = '';
-    this.scrollChatToBottom();
-
-    // Simulate typing and response
-    this.isTyping = true;
-    setTimeout(() => {
-      const response = this.generateAIResponse(userMessage);
-      this.chatMessages.push({
-        text: response,
-        time: new Date(),
-        isOwn: false,
-      });
-      this.isTyping = false;
-      this.scrollChatToBottom();
-    }, 1500 + Math.random() * 1000); // Random delay between 1.5-2.5 seconds
-  }
-
-  private generateAIResponse(userMessage: string): string {
-    // Simple AI response logic
-    const message = userMessage.toLowerCase();
-
-    if (message.includes('hello') || message.includes('hi')) {
-      return 'Hi there! Great to meet you! What kind of development are you most passionate about?';
-    } else if (message.includes('project')) {
-      return 'That sounds like an exciting project! I love hearing about what other developers are building. What tech stack are you using?';
-    } else if (message.includes('code') || message.includes('coding')) {
-      return "I totally get that! There's something magical about writing clean, efficient code. What's your favorite programming language?";
-    } else if (message.includes('work')) {
-      return "Work can be really rewarding when you're building something meaningful! Are you working on anything particularly interesting right now?";
-    } else {
-      // Random response
-      return this.chatResponses[
-        Math.floor(Math.random() * this.chatResponses.length)
-      ];
-    }
+  clearChatError(): void {
+    this.chatError = '';
   }
 
   private scrollChatToBottom(): void {
@@ -398,11 +399,6 @@ export class DevDatingRoom {
     if (backendTechs.includes(tech)) return 'backend';
     if (databaseTechs.includes(tech)) return 'database';
     return '';
-  }
-
-  tryExample(repo: string): void {
-    // This can be used later if you want to integrate with the WhoYouCode analysis
-    console.log('Analyzing repo:', repo);
   }
 
   resetProfiles(): void {

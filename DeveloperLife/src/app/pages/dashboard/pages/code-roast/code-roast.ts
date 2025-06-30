@@ -73,10 +73,17 @@ export class CodeRoast implements AfterViewInit, OnDestroy, OnInit {
   // Monaco configuration
   private monacoLanguageMap: Record<string, string> = {
     javascript: 'javascript',
+    'node.js': 'javascript',
     python: 'python',
     java: 'java',
+    'c# / .net': 'csharp',
     csharp: 'csharp',
     cpp: 'cpp',
+    go: 'go',
+    rust: 'rust',
+    php: 'php',
+    ruby: 'ruby',
+    angular: 'typescript',
   };
 
   public currentTheme = 'vs-dark';
@@ -276,6 +283,14 @@ export class CodeRoast implements AfterViewInit, OnDestroy, OnInit {
 // Test your solution:
 // console.log(solution([2,7,11,15], 9));`,
 
+      'node.js': `function solution(nums, target) {
+    // Write your Node.js solution here
+    
+}
+
+// Test your solution:
+// console.log(solution([2,7,11,15], 9));`,
+
       python: `def solution(nums, target):
     """
     Write your solution here
@@ -288,6 +303,13 @@ export class CodeRoast implements AfterViewInit, OnDestroy, OnInit {
       java: `public class Solution {
     public int[] solution(int[] nums, int target) {
         // Write your solution here
+        
+    }
+}`,
+
+      'c# / .net': `public class Solution {
+    public int[] TwoSum(int[] nums, int target) {
+        // Write your C# solution here
         
     }
 }`,
@@ -306,9 +328,64 @@ public:
         
     }
 };`,
+
+      go: `package main
+
+import "fmt"
+
+func solution(nums []int, target int) []int {
+    // Write your Go solution here
+    
+}
+
+// Test your solution:
+// func main() {
+//     fmt.Println(solution([]int{2,7,11,15}, 9))
+// }`,
+
+      rust: `fn solution(nums: Vec<i32>, target: i32) -> Vec<i32> {
+    // Write your Rust solution here
+    
+}
+
+// Test your solution:
+// fn main() {
+//     println!("{:?}", solution(vec![2,7,11,15], 9));
+// }`,
+
+      php: `<?php
+function solution($nums, $target) {
+    // Write your PHP solution here
+    
+}
+
+// Test your solution:
+// var_dump(solution([2,7,11,15], 9));
+?>`,
+
+      ruby: `def solution(nums, target)
+    # Write your Ruby solution here
+    
+end
+
+# Test your solution:
+# puts solution([2,7,11,15], 9).inspect`,
+
+      angular: `// Angular TypeScript Component Method
+export class Solution {
+  solution(nums: number[], target: number): number[] {
+    // Write your Angular/TypeScript solution here
+    
+  }
+}
+
+// Test your solution:
+// console.log(new Solution().solution([2,7,11,15], 9));`,
     };
 
-    return templates[this.selectedLanguage] || templates['javascript'];
+    return (
+      templates[this.selectedLanguage.toLowerCase()] || templates['javascript']
+    );
   }
 
   runCode(): void {
